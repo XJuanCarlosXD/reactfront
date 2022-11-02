@@ -10,7 +10,6 @@ const Sidebar = props => {
                     <div className="side-title">Menu</div>
                     <div className="side-menu">
                         <Swicth>
-                            <Route index element={<SidebarProyecto />} />
                             <Route path='/Analisis' element={<SidebarAnalisis />} />
                             <Route index path='/Proyectos' element={<SidebarProyecto />} />
                             <Route path='/Proyectos/Propios' element={<SidebarProyecto />} />
