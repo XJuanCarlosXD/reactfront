@@ -1532,7 +1532,8 @@ button:hover .icon-container i {
   height: 100%;
   max-height: calc(100% - 26%);
   overflow-y: scroll;
-  background-color: var(--border-color);
+  background: var(--border-color);
+  /* background: rgb(255 255 255 / 35%); */
 }
 .caja-dinamica {
   width: 100px;
@@ -2164,6 +2165,9 @@ button:hover .icon-container i {
   width: 300%;
   overflow: hidden;
 }
+.content-form.Ubicación a {
+  height: 100px;
+}
 .content-form.social .col {
   left: 5px;
   cursor: pointer;
@@ -2495,6 +2499,356 @@ input[type="checkbox"] {
   display: none;
 }
 
+.caja .QRDis canvas:nth-child(1) {
+  display: block;
+}
+.caja .QRDis canvas {
+  display: none;
+}
+
 .checkbox-wrapper .QRDis canvas:nth-child(1) {
   display: block;
+}
+.box-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: all;
+  background-color: rgba(36, 39, 59, 0.8);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in;
+}
+.box-loading.is-active {
+  visibility: visible;
+  z-index: 4;
+  opacity: 1;
+}
+.LoadingCard::before {
+  content: "🪪";
+  position: relative;
+  top: -10vh;
+  left: 10vh;
+  font-size: 25em;
+  -webkit-animation: card 2s linear infinite alternate;
+  animation: card 2s linear infinite alternate;
+}
+.LoadingCard::after {
+  content: "Cargando...";
+  display: block;
+  position: relative;
+  top: -12vh;
+  left: 28vh;
+  color: #f9fafb;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 40px;
+  -webkit-animation: loading 2s linear infinite alternate;
+  animation: loading 2s linear infinite alternate;
+}
+@-webkit-keyframes card {
+  from,
+  10% {
+    opacity: 0;
+    left: -60vh;
+  }
+  10% {
+    opacity: 0.1;
+    left: -40vh;
+  }
+  20% {
+    opacity: 0.2;
+    left: -30vh;
+  }
+  30% {
+    opacity: 0.3;
+    left: -20vh;
+  }
+  40% {
+    opacity: 0.4;
+    left: 0vh;
+  }
+  50% {
+    opacity: 0.5;
+    left: 20vh;
+  }
+  80% {
+    opacity: 0.8;
+    left: 30vh;
+  }
+  90% {
+    opacity: 0.9;
+    left: 40vh;
+  }
+  100%,
+  to {
+    opacity: 1;
+    left: 60vh;
+  }
+}
+
+@keyframes card {
+  from,
+  10% {
+    opacity: 0;
+    left: -60vh;
+  }
+  10% {
+    opacity: 0.1;
+    left: -40vh;
+  }
+  20% {
+    opacity: 0.2;
+    left: -30vh;
+  }
+  30% {
+    opacity: 0.3;
+    left: -20vh;
+  }
+  40% {
+    opacity: 0.5;
+    left: 0vh;
+  }
+  50% {
+    opacity: 0.4;
+    left: 20vh;
+  }
+  80% {
+    opacity: 0.3;
+    left: 30vh;
+  }
+  90% {
+    opacity: 0.2;
+    left: 40vh;
+  }
+  100%,
+  to {
+    opacity: 0;
+    left: 60vh;
+  }
+}
+@-webkit-keyframes loading {
+  from,
+  20% {
+    content: "Cargando..";
+  }
+  40% {
+    content: "Cargando...";
+  }
+  80% {
+    content: "Cargando..";
+  }
+  100%,
+  to {
+    content: "Cargando...";
+  }
+}
+
+@keyframes loading {
+  from,
+  20% {
+    content: "Cargando..";
+  }
+  40% {
+    content: "Cargando...";
+  }
+  80% {
+    content: "Cargando..";
+  }
+  100%,
+  to {
+    content: "Cargando...";
+  }
+}
+
+.Form-Control.marco {
+  display: block;
+  margin: 1vh;
+  width: 100%;
+  height: 100%;
+  max-width: 102vh;
+}
+.Form-Control .cuadro.marco {
+  width: 80px;
+  height: 100px;
+  margin: 1vh;
+}
+.Form-Control .cuadro.marco .cuadre {
+  width: 90px;
+  height: 85px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--theme-bg-color);
+  border: var(--theme-bg-color);
+}
+.Form-Control .cuadro.marco .cuadre.marco9 img {
+  width: 80px;
+  height: 80px;
+  display: flex;
+}
+.Form-Control .cuadro.marco .cuadre img.QRCUADRO {
+  position: relative;
+  border-radius: 4px;
+  background: #000000;
+}
+
+/** style QR */
+.boxQR-conten {
+  background: none;
+  height: fit-content;
+}
+.boxQR-conten.QR9 {
+  background: var(--theme-bg-color);
+  height: 98%;
+}
+.boxQR-conten .counten,
+.boxQR-conten .counten-circle {
+  display: none;
+}
+.boxQR-conten.QR9 .counten,
+.boxQR-conten.QR9 .counten-circle {
+  display: flex;
+}
+.boxQR-conten.QR1 .boxQR,
+.boxQR-conten.QR8 .boxQR,
+.boxQR-conten.QR4 .boxQR,
+.boxQR-conten.QR5 .boxQR,
+.boxQR-conten.QR6 .boxQR,
+.boxQR-conten.QR7 .boxQR {
+  border: 5px solid var(--theme-color);
+  position: relative;
+  height: 40vh;
+  transition: all 0.3s ease-in;
+}
+.boxQR-conten.QR3 .boxQR {
+  background: var(--theme-color);
+}
+.boxQR-conten.QR4 .boxQR,
+.boxQR-conten.QR5 .boxQR,
+.boxQR-conten.QR7 .boxQR {
+  height: 48vh;
+}
+.boxQR-conten.QR6 .boxQR {
+  height: 49.8vh;
+}
+.boxQR-conten.QR2 .boxQR {
+  background: none;
+  transition: all 0.3s ease-in;
+}
+.boxQR-conten.QR4 .QRText,
+.boxQR-conten.QR5 .QRText,
+.boxQR-conten.QR6 .QRText {
+  background: var(--theme-color);
+  color: var(--dropdown-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 0px;
+  left: 0.1px;
+  border-radius: 6px;
+  width: 100%;
+  height: 50px;
+  transition: all 0.3s ease-in;
+}
+.boxQR-conten.QR5 .QRText {
+  background: none;
+  color: var(--theme-color);
+  border-top: 5px solid var(--theme-color);
+  border-radius: 0;
+}
+.boxQR-conten.QR1 .QRText,
+.boxQR-conten.QR8 .QRText {
+  position: fixed;
+  bottom: 9.9vh;
+  width: 35vh;
+  height: 9vh;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  background: var(--theme-color);
+  color: var(--dropdown-bg);
+  transition: all 0.3s ease-in;
+}
+.boxQR-conten.QR2 .QRText {
+  bottom: 5vh;
+  transition: all 0.3s ease-in;
+}
+.boxQR-conten.QR3 .QRText {
+  color: #fff;
+}
+.boxQR-conten.QR1 .boxQR .circle,
+.boxQR-conten.QR6 .boxQR .circle {
+  border-left: 20px solid var(--dropdown-bg);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  position: fixed;
+  bottom: 12.6vh;
+  right: 17.8em;
+  transition: all 0.3s ease-in;
+}
+.boxQR-conten.QR6 .boxQR .circle {
+  position: absolute;
+  border-left: 20px solid var(--theme-color);
+  transform: rotate(-90deg);
+  bottom: 7vh;
+  right: 16.5vh;
+}
+.boxQR-conten .QRDis {
+  background: #fff;
+  position: relative;
+  top: 2vh;
+  border-radius: 14px;
+  height: fit-content;
+  transition: all 0.3s ease-in;
+}
+.boxQR-conten.QR3 .boxQR{
+  background: var(--theme-bg-color);
+}
+.boxQR-conten.QR3{
+  background: var(--theme-color);
+  height: 58vh;
+  border-radius: 14px;
+}
+.boxQR-conten.QR3 .boxQR::before {
+  background: var(--theme-color);
+  border-radius: 50%;
+  box-shadow: 
+    220px 0 0 0 var(--theme-color), 
+    0 280px 0 0 var(--theme-color), 
+    220px 280px 0 0 var(--theme-color),
+    -5px 50px 0 -9px var(--theme-color),
+    -5px 80px 0 -9px var(--theme-color),
+    -5px 110px 0 -9px var(--theme-color),
+    -5px 140px 0 -9px var(--theme-color),
+    -5px 170px 0 -9px var(--theme-color),
+    -5px 200px 0 -9px var(--theme-color),
+    225px 50px 0 -9px var(--theme-color),
+    225px 80px 0 -9px var(--theme-color),
+    225px 110px 0 -9px var(--theme-color),
+    225px 140px 0 -9px var(--theme-color),
+    225px 170px 0 -9px var(--theme-color),
+    225px 200px 0 -9px var(--theme-color);
+  content: "";
+  display: block;
+  height: 30px;
+  left: -10px;
+  position: absolute;
+  top: -10px;
+  width: 30px;
+}
+.boxQR-conten.QR3 .QRDis,
+.boxQR-conten.QR3 .QRDis canvas {
+  background: var(--content-title-color);
+  border-radius: 14px;
+}
+.boxQR-conten .QRDis canvas {
+  border-radius: 0;
 }

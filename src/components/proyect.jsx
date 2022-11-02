@@ -6,13 +6,14 @@ import { db } from '../firebase/firebase';
 import html2canvas from 'html2canvas';
 import QRCodeStyling from 'qr-code-styling';
 
-const Proyect = props => {
+export const Proyect = props => {
     const [activeLink, setActiveLink] = useState('');
     const [modal, setModal] = useState('');
     const [dropdown, setDropdown] = useState(true);
     const [check, setChek] = useState(false);
     const [isOpen, setIsopen] = useState('');
     const [search, setSeacrh] = useState(false);
+    const [isActive, setisActive] = useState('is-active');
     const [data, setData] = useState([]);
     const VcardDataColletion = collection(db, "VcardData");
     const QRContainer = (row, index) => {
@@ -21,9 +22,11 @@ const Proyect = props => {
         qrCode.append(document.getElementById(index));
     }
     const getData = async () => {
-        const res = await getDocs(VcardDataColletion);
-        setData(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-        console.log(data)
+        await getDocs(VcardDataColletion).then((res) => {
+            setData(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+        }).then(() => {
+            setisActive('');
+        })
     };
     const dropdownActive = (index) => {
         if (dropdown) {
@@ -55,9 +58,9 @@ const Proyect = props => {
     return (
         <motion.div
             className="main-container"
-            initial={{ width: 0, transition: "all 0.1s ease-in" }}
-            animate={{ width: "100%", transition: "all 0.1s ease-in" }}
-            exit={{ x: window.innerWidth, transition: "all 0.1s ease-in-out" }}>
+            initial={{ opacity: 0, transition: "all 0.1s ease-in" }}
+            animate={{ opacity: 1, transition: "all 0.1s ease-in" }}
+            exit={{ opacity: 0, transition: "all 0.1s ease-in-out" }}>
             <div className="main-header">
                 <Link className="menu-link-main" href="#">Todos los Proyectos</Link>
                 <div className="header-menu">
@@ -133,8 +136,8 @@ const Proyect = props => {
                                             <div className="menu">
                                                 <button className={`dropdown ${activeLink === index ? 'is-active' : ''}`} onClick={() => dropdownActive(index)}>
                                                     <ul>
-                                                        <li onClick={() => CloneProyect(row.id)}><Link href="#" id='li1'><i className="fa-solid fa-clone"></i> Duplicar</Link></li>
-                                                        <li onClick={() => document.getElementById('li2').click()}><Link id='li2' to={`/Proyectos/new/Vcard/${row.id}`}><i className="fa-solid fa-pen-to-square"></i> Editar</Link></li>
+                                                        <li onClick={() => CloneProyect(row.id)}><Link href="#"><i className="fa-solid fa-clone"></i> Duplicar</Link></li>
+                                                        <li onClick={() => document.getElementById(`li${index}`).click()}><Link id={`li${index}`} to={`/Proyectos/new/Vcard/${row.id}`}><i className="fa-solid fa-pen-to-square"></i> Editar</Link></li>
                                                         <li onClick={() => setModal(index)}><Link href="#"><i className="fa-solid fa-trash-can"></i> Borrar</Link></li>
                                                         <li><Link href="#"><i className="fa-solid fa-xmark"></i> Cancel</Link></li>
                                                     </ul>
@@ -170,9 +173,19 @@ const Proyect = props => {
                     </ul>
                 </div>
             </div>
+            <Loading isActive={isActive} />
             <div className={`overlay-app ${modal !== '' ? 'is-active' : '' || isOpen !== '' ? 'is-active' : ''}`}></div>
         </motion.div >
     );
+};
+export const Loading = props => {
+    return (
+        <div>
+            <div className={`box-loading ${props.isActive}`}>
+                <div className='LoadingCard'></div>
+            </div>
+        </div>
+    )
 };
 const QRdonwload = props => {
     const printRef = useRef();
@@ -279,5 +292,3 @@ const QRdonwload = props => {
         </div>
     )
 };
-
-export default Proyect;

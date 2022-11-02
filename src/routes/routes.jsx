@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import Proyect from '../components/proyect';
+import { Proyect } from '../components/proyect';
 import Home from '../components/home';
 import Navbar from "../layouts/navbar";
 import NewVcard from '../components/newVcard';

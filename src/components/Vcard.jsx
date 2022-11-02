@@ -1,67 +1,95 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { getDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 import '../styles/style.css';
+import { useEffect } from 'react';
 
 const Vcard = props => {
-    const socialq = ["Facebook", "Twitter", "Instagram", "Youtube", "TikTok", "Reddit", "Telegram", "Vimeo", "GitHub", "CodeSandbox", "Enlase Web", "SoundCloud", "Messenger", "Snapchat", "Spotify", "WhatsApp", "Apple Music"];
-    const defaultValues = [
-        { icon: 0, url: "Perfil", text: socialq[0] },
-        { icon: 1, url: "Perfil", text: socialq[1] },
-        { icon: 2, url: "Perfil", text: socialq[2] },
-    ]
-    const [social, setSocial] = useState(defaultValues);
+    const [data, setData] = useState([]);
+    const { id } = useParams();
+    const VcardDataColletion = doc(db, "VcardData", id);
+    const concat = data?.contact;
+    const getData = async () => {
+        const res = await getDoc(VcardDataColletion);
+        setData(res.data());
+    };
+    useEffect(() => {
+        getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return (
         <div className='vCardPresentacion'>
-            <div className="caja-presentacion"></div>
+            {data?.profile?.fondo === '' ? (
+                <img src={data?.profile?.fondo} alt='' className="caja-presentacion" />
+            ) : (
+                <div style={{ backgroundColor: data?.profile?.colorFondo }} className="caja-presentacion"></div>
+            )}
             <div className="caja-backAvatar">
-                <div className="caja-dinamica"></div>
+                <img src={data?.profile?.img} alt='' className="caja-dinamica" />
             </div>
-            <div className="text-title">pedro abreu</div>
-            <div className="text-subtitle">Presidente</div>
+            <div className="text-title">{data?.profile?.name}</div>
+            <div className="text-subtitle">{data?.profile?.position}</div>
             <div className='caja-button'>
-                <button><span className="fa-solid fa-phone"></span>
-                    <p>Llamar</p>
-                </button>
-                <button><span className="fa-solid fa-envelope"></span>
-                    <p>Email</p>
-                </button>
-                <button><span className="fa-solid fa-globe"></span>
-                    <p>Web</p>
-                </button>
-                <button><span className='fa-solid fa-location-dot'></span>
-                    <p style={{ marginLeft: "-10px" }}>Ubicacion</p>
-                </button>
+                {concat?.find(e => e.select === "Telefono Movil") !== undefined ? (
+                    <a href={`tel:${concat?.find(e => e.select === "Telefono Movil")?.title}`}>
+                        <button style={{ backgroundColor: data?.profile.colorBotones }}><span className="fa-solid fa-phone"></span>
+                            <p>Llamar</p>
+                        </button>
+                    </a>
+                ) : ''}
+                {concat?.find(e => e.select === "Email") !== undefined ? (
+                    <a href={`mailto:${concat?.find(e => e.select === "Email")?.title}`}>
+                        <button style={{ backgroundColor: data?.profile.colorBotones }}><span className="fa-solid fa-envelope"></span>
+                            <p>Email</p>
+                        </button>
+                    </a>
+                ) : ''}
+                {concat?.find(e => e.select === "Pagina Web") !== undefined ? (
+                    <a href={`${concat?.find(e => e.select === "Pagina Web")?.title}`} target="_blank" rel="noopener noreferrer">
+                        <button style={{ backgroundColor: data?.profile.colorBotones }}><span className="fa-solid fa-globe"></span>
+                            <p>Web</p>
+                        </button>
+                    </a>
+                ) : ''}
+                {concat?.find(e => e.select === "Ubicación") !== undefined ? (
+                    <a href={`https://www.google.com/maps/place/${concat?.find(e => e.select === "Ubicación")?.title}`} target="_blank" rel="noopener noreferrer">
+                        <button style={{ backgroundColor: data?.profile.colorBotones }}><span className='fa-solid fa-location-dot'></span>
+                            <p style={{ marginLeft: "-10px" }}>Ubicacion</p>
+                        </button>
+                    </a>
+                ) : ''}
             </div>
             <div className="caja-info">
-                <div className="content-form">
-                    <button><span className="fa-solid fa-phone"></span></button>
-                    <a href='#ad'>809 350 9268</a>
-                    <p>Telefono fijo</p>
-                </div>
-                <div className="content-form">
-                    <button><span className="fa-solid fa-phone"></span></button>
-                    <a href='#a'>809 350 9268</a>
-                    <p>Telefono fijo</p>
-                </div>
-                <div className="content-form">
-                    <button><span className="fa-solid fa-phone"></span></button>
-                    <a href='#a'>809 350 9268</a>
-                    <p>Telefono fijo</p>
-                </div>
-                <div className="content-form">
-                    <button><span className="fa-solid fa-phone"></span></button>
-                    <a href='#a'>809 350 9268</a>
-                    <p>Telefono fijo</p>
-                </div>
+                {data?.contact?.map((row, index) => (
+                    <div className={`content-form contact ${row.select}`} key={index}>
+                        <button style={{ backgroundColor: data?.profile.colorBotones }}><span className={row.icon}></span></button>
+                        <a href='#ad'>{row.title}</a>
+                        <p>{row.select}</p>
+                    </div>
+                ))}
                 <div className='line-social'>
-                    {social.map((row, index) => (
+                    {data?.social?.map((row, index) => (
                         <div className='content-form social' key={index}>
-                            <Social {...row} url="row.url" position={row.icon} />
-                            <Link>{row.text}</Link>
+                            <Social {...row} url={row.url} position={row.icon} />
+                            <a href={row.redirecionable}>{row.text}</a>
                             <p>{row.url}</p>
                         </div>
                     ))}
                 </div>
+            </div>
+            <div className="btn-container" style={{ marginBottom: "15px" }}>
+                <button>
+                    <span className="text">Agregar Contacto 📞</span>
+                    <div className="icon-container">
+                        <div className="icon icon--left">
+                            <i className="fa-solid fa-address-book"></i>
+                        </div>
+                        <div className="icon icon--right">
+                            <i className="fa-solid fa-address-book"></i>
+                        </div>
+                    </div>
+                </button>
             </div>
         </div >
     );

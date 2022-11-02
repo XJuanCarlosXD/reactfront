@@ -9,13 +9,14 @@ import { collection, addDoc, getDoc, doc, updateDoc, query, orderBy, limit, getD
 import { ref as reference, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../firebase/firebase';
 import { db } from '../firebase/firebase';
+import { Loading } from './proyect';
 
 const defaultState = [{ select: "Email", title: "", icon: "fa-solid fa-envelope" },
-{ select: "Telefono Movi", title: "", icon: "fa-solid fa-mobile-screen" }, { select: "Ubicación", title: "", icon: "fa-solid fa-location-dot" }];
+{ select: "Telefono Movil", title: "", icon: "fa-solid fa-mobile-screen" }, { select: "Ubicación", title: "", icon: "fa-solid fa-location-dot" }];
 var qrCode = new QRCodeStyling({
     width: 200,
     height: 200,
-    data: "http://localhost:3000/Proyectos/Activos/QR/",
+    data: "http://localhost:3000/Vcard/Presentacion/QR/",
     image: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
     dotsOptions: {
         color: "#B10fd1",
@@ -51,10 +52,12 @@ const NewVcard = () => {
     const [social, setSocial] = useState([]);
     const [img, setImg] = useState('https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg');
     const [rows, setRows] = useState(defaultState);
+    const [isActive, setisActive] = useState('');
     const [fondo, setImagefondo] = useState('');
     const [fileExt, setfileExt] = useState('png');
     const [data, setDataa] = useState({ ...qrCode._options });
     const [dataprofile, setDataprofile] = useState([]);
+    const [marco, setMarco] = useState(1);
     const printRef = useRef();
     const ref = useRef(null);
     const onSubmit = async data => {
@@ -65,6 +68,7 @@ const NewVcard = () => {
                 active: true,
                 createAt: new Date(),
                 updateAt: new Date(),
+                marco: marco,
                 QRdata: { ...qrCode._options },
                 contact: [...rows],
                 profile: { name: data.name, position: data.position, img: img, radius: data.radius, fondo: fondo, fondoActive: data.fondoActive, colorFondo: data.colorFondo, colorBotones: data.colorButton },
@@ -73,7 +77,7 @@ const NewVcard = () => {
             await addDoc(VcardDataColletion, arraydata).then(async () => {
                 const q = await getDocs(query(VcardDataColletion, orderBy('createAt', 'desc'), limit(1)));
                 const id = q.docs.map((row) => (row.id));
-                qrCode.update({ data: `http://localhost:3000/Proyectos/Activos/QR/${id[0]}` });
+                qrCode.update({ data: `http://localhost:3000/Vcard/Presentacion/QR/${id[0]}` });
                 const reference = doc(db, "VcardData", id[0]);
                 await updateDoc(reference, { QRdata: { ...qrCode._options } });
             }).then(() => {
@@ -91,6 +95,7 @@ const NewVcard = () => {
                 nameProyect: data.proyectName,
                 active: true,
                 updateAt: new Date(),
+                marco: marco,
                 QRdata: { ...qrCode._options },
                 contact: [...rows],
                 profile: { name: data.name, position: data.position, img: img, radius: data.radius, fondo: fondo, fondoActive: data.fondoActive, colorFondo: data.colorFondo, colorBotones: data.colorButton },
@@ -139,6 +144,7 @@ const NewVcard = () => {
         }
     };
     const setData = async (id) => {
+        setisActive('is-active');
         await getDoc(doc(db, "VcardData", id)).then(res => {
             if (res.exists()) {
                 const data = res.data();
@@ -148,6 +154,7 @@ const NewVcard = () => {
                 setRows([...data.contact]);
                 setValue('name', data.profile.name);
                 setValue('position', data.profile.position);
+                setMarco(data.marco);
                 setValue('fondoActive', data.profile.fondoActive);
                 setValue('colorBotones', data.profile.colorBotones);
                 setValue('colorFondo', data.profile.colorFondo);
@@ -160,7 +167,7 @@ const NewVcard = () => {
             } else {
                 console.log('No existe vCard');
             }
-        })
+        }).then(() => setisActive(''))
             .catch(error => console.log(error))
     };
     useEffect(() => {
@@ -179,9 +186,9 @@ const NewVcard = () => {
     return (
         <motion.div
             className="main-container"
-            initial={{ width: 0, transition: "all 0.1s ease-in" }}
-            animate={{ width: "100%", transition: "all 0.1s ease-in" }}
-            exit={{ x: window.innerWidth, transition: "all 0.1s ease-in-out" }}>
+            initial={{ opacity: 0, transition: "all 0.1s ease-in" }}
+            animate={{ opacity: 1, transition: "all 0.1s ease-in" }}
+            exit={{ opacity: 0, transition: "all 0.1s ease-in-out" }}>
             <div className="main-header">
                 <Link className="menu-link-main" href="#">Nueva Vcard</Link>
             </div>
@@ -206,18 +213,23 @@ const NewVcard = () => {
                                     handleOnChange={handleOnChange}
                                     handleOnAdd={handleOnAdd}
                                     social={social}
+                                    register={register}
+                                    watch={watch}
+                                    errors={errors}
                                     handleOnRemove={handleOnRemove} />
                             </div>
                             <FormTree
                                 setFileExt={(value) => setfileExt(value)}
                                 onDownloadClick={onDownloadClick}
                                 data={data}
+                                setMarco={(value) => setMarco(value)}
+                                marco={marco}
                                 id={id} />
                         </StepWizard>
                     </div>
-                    <div className='caja'>
-                        <div className='caja' style={{ opacity: watch('form') ? 1 : 0, transition: "all 0.3s ease-in" }}>
-                            <div ref={printRef} className='boxQR-conten'>
+                    <div className={`caja QR${marco}`}>
+                        <div ref={printRef} className={`caja`} style={{ opacity: watch('form') ? 1 : 0, transition: "all 0.3s ease-in" }}>
+                            <div className={`boxQR-conten QR${marco}`}>
                                 <div className='counten'>
                                     <div className='circle'></div>
                                     <div className='retangule'></div>
@@ -225,6 +237,7 @@ const NewVcard = () => {
                                 <div className='boxQR'>
                                     <div ref={ref} className='QRDis' />
                                     <div className='QRText'>Escaneame!</div>
+                                    <div className='circle'></div>
                                 </div>
                                 <div className='counten-circle'>
                                     <div className='circle'></div>
@@ -238,6 +251,7 @@ const NewVcard = () => {
                             img={img}
                             watch={watch} />
                     </div>
+                    <Loading isActive={isActive} />
                 </div>
             </form>
         </motion.div>
@@ -252,6 +266,9 @@ const FormThoRow = (props) => {
     useEffect(() => {
         setSelect(props.select);
     }, [props.select])
+    const onChangeInput = () => {
+        props.onChange("title", `${props.watch('direccion')} ${props.watch('numeracion')}, ${props.watch('codigo')}, ${props.watch('ciudad')}, ${props.watch('estado')}, ${props.watch('pais')}`)
+    }
     const onSelect = (e) => {
         if (e.target.value === 'Email') {
             setDetalle('📧 Escribe un correo electronico');
@@ -281,18 +298,36 @@ const FormThoRow = (props) => {
         }
     };
     return (
-        <div className="Form-Control">
-            <select id='info' defaultValue={"👉 Selecciona una opcion"} value={select} onBlur={onBlur} onChange={onSelect}>
-                <option hidden>👉 Selecciona una opcion</option>
-                <option value={'Email'}>📧 Email</option>
-                <option value={'Pagina Web'}>💻 Pagina Web</option>
-                <option value={'Ubicación'}>📌 Ubicación</option>
-                <option value={'Telefono Movil'}>📱 Telefono Movil</option>
-                <option value={'Telefono Fijo'}>📞 Telefono Fijo</option>
-            </select>
-            <input type="text" value={props.input} onChange={(e) => props.onChange("title", e.target.value)} placeholder={detalle} disabled={select === '' ? true : false} />
-            <button type='button' onClick={props.onRemove}><i className="fa-solid fa-minus"></i></button>
-        </div>
+        <>
+            <div className="Form-Control">
+                <select id='info' defaultValue={"👉 Selecciona una opcion"} value={select} onBlur={onBlur} onChange={onSelect}>
+                    <option hidden>👉 Selecciona una opcion</option>
+                    <option value={'Email'}>📧 Email</option>
+                    <option value={'Pagina Web'}>💻 Pagina Web</option>
+                    <option value={'Ubicación'}>📌 Ubicación</option>
+                    <option value={'Telefono Movil'}>📱 Telefono Movil</option>
+                    <option value={'Telefono Fijo'}>📞 Telefono Fijo</option>
+                </select>
+                <input type="text" value={props.input} onChange={(e) => props.onChange("title", e.target.value)} placeholder={detalle} disabled={select === '' ? true : false} hidden={select === 'Ubicación' ? true : false} />
+                <button type='button' onClick={props.onRemove}><i className="fa-solid fa-minus"></i></button>
+            </div>
+            {select === 'Ubicación' ? (
+                <div onChange={onChangeInput}>
+                    <div className="Form-Control">
+                        <input type="text" className={props.errors.direccion && 'error'} placeholder='Dirección' {...props.register('direccion', { required: true })} />
+                        <input type="text" className={props.errors.numeracion && 'error'} placeholder='Numeración' {...props.register('numeracion', { required: true })} />
+                        <input type="number" className={props.errors.codigo && 'error'} placeholder='Código Postal' {...props.register('codigo', { required: true, maxLength: 6, min: 1 })} />
+                    </div>
+                    <div className="Form-Control">
+                        <input type="text" className={props.errors.ciudad && 'error'} placeholder='Ciudad' {...props.register('ciudad', { required: true })} />
+                        <input type="text" className={props.errors.estado && 'error'} placeholder='Estado' {...props.register('estado', { required: true })} />
+                    </div>
+                    <div className="Form-Control">
+                        <input type="text" className={props.errors.pais && 'error'} placeholder='País' {...props.register('pais', { required: true })} />
+                    </div>
+                </div>
+            ) : ''}
+        </>
     )
 };
 const Social = props => {
@@ -346,6 +381,9 @@ const FormTwo = props => {
                         {...row}
                         select={row.select}
                         input={row.title}
+                        register={props.register}
+                        watch={props.watch}
+                        errors={props.errors}
                         onChange={(name, value) => props.handleOnChange(index, name, value)}
                         onRemove={() => props.handleOnRemove(index)}
                         key={index}
@@ -403,14 +441,14 @@ const PreviewsVcard = props => {
                 <a href={array.find(e => e.select === "Telefono Movil") !== undefined ? `tel:${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-phone"></span><p style={{ left: " -3px" }}>Llamar</p></button></a>
                 <a href={array.find(e => e.select === "Email") !== undefined ? `mailto:${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-envelope"></span><p style={{ left: " -0.1px" }}>Email</p></button></a>
                 <a href={array.find(e => e.select === "Pagina Web") !== undefined ? `${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-globe"></span><p>Web</p></button></a>
-                <a href={array.find(e => e.select === "Ubicación") !== undefined ? `${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className='fa-solid fa-location-dot'></span><p style={{ left: "-13px" }}>Ubicacion</p></button></a>
+                <a href={`https://www.google.com/maps/place/${array?.find(e => e.select === "Ubicación")?.title}`} target="_blank" rel="noopener noreferrer"><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className='fa-solid fa-location-dot'></span><p style={{ left: "-13px" }}>Ubicacion</p></button></a>
             </div>
             <div className='caja-info'>
                 <div className="header">
                     <h3 className="header-menu">Informacion Contacto 📞</h3>
                 </div>
                 {props.rows.map((row, index) => (
-                    <div className='content-form' key={index}>
+                    <div className={`content-form ${row.select}`} key={index}>
                         <button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className={row.icon}></span></button>
                         <Link>{row.title}</Link>
                         <p>{row.select}</p>
@@ -648,7 +686,21 @@ const FormTree = (props) => {
     return (
         <div>
             <div className="header">
-                <h3 className="header-menu">Diseño del QR  🔲</h3>
+                <h3 className="header-menu">Marco del QR  🔲</h3>
+            </div>
+            <div className="Form-Control marco">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((row, index) => {
+                    return (
+                        <div className="tooltip" onClick={() => { props.setMarco(row) }} key={index}>
+                            <button type='button' className={`cuadro marco ${props.marco === index + 1 ? "active" : ""}`}>
+                                <div className={`cuadre marco${row}`}>
+                                    <img src={`/images/${row}.png`} alt='' className='QRCUADRO' />
+                                </div>
+                            </button>
+                            <span className="tooltiptext"></span>
+                        </div>
+                    )
+                })}
             </div>
             <div className="header">
                 <h3 className="header-menu">Estilo de Puntos QR  ◻️</h3>

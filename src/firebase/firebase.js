@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from '@firebase/firestore';
 import { getStorage } from "firebase/storage";
+import { getPerformance } from "firebase/performance";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBd7jR6EuB0tj8tw6op2VzdubR6hn7hJPU",
@@ -17,6 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const perf = getPerformance(app);
 
 // eslint-disable-next-line no-unused-vars
 const analytics = getAnalytics(app);
