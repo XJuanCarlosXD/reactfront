@@ -957,18 +957,18 @@ body.light-mode .video-bg:before {
   border-radius: 14px;
   border: 1px solid var(--theme-bg-color);
   padding: 20px;
-  transition: all 0.7s ease-in;
+  transition: all 3s ease-in-out;
 }
 .form {
   display: flex;
   height: 0;
   padding: 20px;
   width: fit-content;
-  transition: all 0.7s ease-in;
+  transition: all 3s ease-in-out;
 }
 .adobe-product:hover .form .firt {
   top: -60px;
-  transition: all 0.7s ease-in;
+  transition: all 1s ease-in;
   height: 110px;
 }
 .adobe-product:hover .form .second {
@@ -976,7 +976,7 @@ body.light-mode .video-bg:before {
   top: -55px;
   width: 100%;
   max-width: fit-content;
-  transition: all 0.7s ease-in;
+  transition: all 1s ease-in;
 }
 .adobe-product:hover .form .second span.status {
   position: relative;
@@ -1001,26 +1001,40 @@ body.light-mode .video-bg:before {
 .adobe-product:hover .form .three {
   opacity: 1;
   margin-top: -40px;
-  transition: all 0.7s ease-in-out;
+  transition: all 1s ease-in;
 }
 .adobe-product:hover .Previews {
   transform: scale(1.02);
   width: 100px;
   height: 100px;
-  transition: all 0.7s ease-in;
+  transition: all 1s ease-in;
   background-color: var(--content-bg);
 }
 .form .firt {
   display: inline-flex;
   position: relative;
   flex-wrap: wrap;
-  align-items: center;
   height: 40px;
   overflow: hidden;
   top: -30px;
-  margin-left: 10px;
-  transition: all 0.7s ease-in;
+  transition: all 3s ease-in-out;
   width: 220px;
+}
+.form::before {
+  content: "";
+  position: relative;
+  display: flex;
+  height: 40px;
+  top: -3vh;
+  left: 25vh;
+  transition: all 3s ease-in-out;
+  border-right: 3px solid var(--theme-color);
+  border-radius: 14px;
+}
+.adobe-product:hover .form::before {
+  height: 14vh;
+  top: -7vh;
+  transition: all 1s ease-in;
 }
 .form .second {
   display: inline-flex;
@@ -1032,27 +1046,25 @@ body.light-mode .video-bg:before {
   align-items: center;
   left: 50px;
   top: -8px;
-  transition: all 0.7s ease-in;
+  transition: all 3s ease-in-out;
 }
 .form .three {
   display: block;
   flex-wrap: wrap;
   opacity: 0;
   align-items: center;
-  transition: all 0.7s ease-in;
+  transition: all 3s ease-in-out;
 }
 .form .three h3 {
   display: block;
   font-size: 60px;
   margin-top: -10px;
   margin-left: 25px;
-  transition: all 0.7s ease-in;
 }
 .form .three h4 {
   display: block;
   font-size: 16px;
   margin-top: -60px;
-  transition: all 0.7s ease-in;
 }
 @media screen and (max-width: 700px) {
   .form .right {
@@ -1077,7 +1089,7 @@ body.light-mode .video-bg:before {
   transform: scale(1.02);
   width: 100px;
   height: 100px;
-  transition: all 0.7s ease-in;
+  transition: all 1s ease-in;
   background-color: var(--content-bg);
 }
 .Previews canvas {
@@ -1085,7 +1097,7 @@ body.light-mode .video-bg:before {
   width: 100%;
   height: 100%;
   border-radius: 6px;
-  transition: all 0.7s ease-in;
+  transition: all 3s ease-in-out;
 }
 .Previews + .Previews {
   margin-left: 20px;
@@ -2446,67 +2458,26 @@ input[type="checkbox"] {
   border: 2px solid var(--theme-color);
 }
 .pop-up.donwload {
-  width: 500px;
-  height: 450px;
+  width: 800px;
+  height: 500px;
   cursor: default;
 }
-.checkbox-wrapper .caja {
-  width: 100%;
-  height: 100%;
-  max-height: 20em;
-  max-width: 13em;
-  background: var(--theme-color);
-  position: relative;
-  top: 40px;
-}
-.checkbox-wrapper .caja .boxQR-conten {
-  width: 150px;
-  height: 210px;
-  border-radius: 14px;
-  margin: 15px auto;
-  margin-right: 10px;
-}
-.checkbox-wrapper .caja .boxQR {
-  height: 120px;
-  width: 120px;
-  background: var(--theme-bg-color);
-}
-.checkbox-wrapper .QRText {
-  font-size: 10px;
-  bottom: 5px;
-  color: #f7f7f7;
-}
-.checkbox-wrapper .counten-circle {
-  bottom: -40px;
-  width: 30px;
-  height: 30px;
-  background: var(--theme-bg-color);
-}
-.checkbox-wrapper .circle {
-  width: 60%;
-  height: 60%;
-  border: 3px solid #f7f7f7;
-}
-.checkbox-wrapper .retangule {
-  border: 3px solid #f7f7f7;
+.box.QRstyles {
+  width: 80vh;
+  height: 60vh;
+  position: absolute;
+  top: 16vh;
 }
 .pop-up.donwload .content-button-wrapper {
-  margin: 0 auto;
+  align-items: left;
 }
-.checkbox-wrapper .QRDis canvas {
-  width: 110px;
-  top: -8px;
-  display: none;
-}
-
-.caja .QRDis canvas:nth-child(1) {
+.box.QRstyles .QRDis canvas:nth-child(1) {
   display: block;
 }
-.caja .QRDis canvas {
+.box.QRstyles .QRDis canvas {
   display: none;
 }
-
-.checkbox-wrapper .QRDis canvas:nth-child(1) {
+.QRstyles .QRDis canvas:nth-child(1) {
   display: block;
 }
 .box-loading {
@@ -2809,10 +2780,10 @@ input[type="checkbox"] {
   height: fit-content;
   transition: all 0.3s ease-in;
 }
-.boxQR-conten.QR3 .boxQR{
+.boxQR-conten.QR3 .boxQR {
   background: var(--theme-bg-color);
 }
-.boxQR-conten.QR3{
+.boxQR-conten.QR3 {
   background: var(--theme-color);
   height: 58vh;
   border-radius: 14px;
@@ -2820,21 +2791,13 @@ input[type="checkbox"] {
 .boxQR-conten.QR3 .boxQR::before {
   background: var(--theme-color);
   border-radius: 50%;
-  box-shadow: 
-    220px 0 0 0 var(--theme-color), 
-    0 280px 0 0 var(--theme-color), 
-    220px 280px 0 0 var(--theme-color),
-    -5px 50px 0 -9px var(--theme-color),
-    -5px 80px 0 -9px var(--theme-color),
-    -5px 110px 0 -9px var(--theme-color),
-    -5px 140px 0 -9px var(--theme-color),
-    -5px 170px 0 -9px var(--theme-color),
-    -5px 200px 0 -9px var(--theme-color),
-    225px 50px 0 -9px var(--theme-color),
-    225px 80px 0 -9px var(--theme-color),
-    225px 110px 0 -9px var(--theme-color),
-    225px 140px 0 -9px var(--theme-color),
-    225px 170px 0 -9px var(--theme-color),
+  box-shadow: 220px 0 0 0 var(--theme-color), 0 280px 0 0 var(--theme-color),
+    220px 280px 0 0 var(--theme-color), -5px 50px 0 -9px var(--theme-color),
+    -5px 80px 0 -9px var(--theme-color), -5px 110px 0 -9px var(--theme-color),
+    -5px 140px 0 -9px var(--theme-color), -5px 170px 0 -9px var(--theme-color),
+    -5px 200px 0 -9px var(--theme-color), 225px 50px 0 -9px var(--theme-color),
+    225px 80px 0 -9px var(--theme-color), 225px 110px 0 -9px var(--theme-color),
+    225px 140px 0 -9px var(--theme-color), 225px 170px 0 -9px var(--theme-color),
     225px 200px 0 -9px var(--theme-color);
   content: "";
   display: block;
@@ -2851,4 +2814,133 @@ input[type="checkbox"] {
 }
 .boxQR-conten .QRDis canvas {
   border-radius: 0;
+}
+.img-content img {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  top: -8vh;
+  left: 8vh;
+}
+.img-content .animation div {
+  font-size: 14vh;
+  position: relative;
+  top: 3vh;
+}
+.img-content .animation {
+  position: relative;
+  top: -13vh;
+  height: 10px;
+  -webkit-animation: logo 3s linear infinite alternate;
+  animation: logo 3s linear infinite alternate;
+}
+.img-content {
+  font-size: 10vh;
+  -webkit-animation: textlogo 5s linear infinite alternate;
+  animation: textlogo 5s linear infinite alternate;
+}
+.content-wrapper-img {
+  -webkit-animation: logo 5s linear infinite alternate;
+  animation: logo 5s linear infinite alternate;
+}
+@-webkit-keyframes logo {
+  from,
+  20% {
+    transform: rotateY(180deg);
+  }
+  40% {
+    transform: rotateY(0);
+  }
+  80% {
+    transform: rotateY(180deg);
+  }
+  100%,
+  to {
+    transform: rotateY(0);
+  }
+}
+@keyframes logo {
+  from,
+  20% {
+    transform: rotateY(180deg);
+  }
+  40% {
+    transform: rotateY(0);
+  }
+  80% {
+    transform: rotateY(180deg);
+  }
+  100%,
+  to {
+    transform: rotateY(0);
+  }
+}
+@-webkit-keyframes textlogo {
+  from,
+  20% {
+    color: #fff;
+  }
+  60% {
+    color: #ff1616;
+  }
+  100%,
+  to {
+    color: #004aad;
+  }
+}
+@keyframes textlogo {
+  from,
+  20% {
+    color: #fff;
+  }
+  60% {
+    color: #ff1616;
+  }
+  100%,
+  to {
+    color: #004aad;
+  }
+}
+.box.QRdisene8 {
+  background: var(--theme-bg-color);
+  /* border: 3px solid var(--theme-color); */
+}
+.QRdisene8 .boxQR {
+  border: 3px solid var(--theme-color);
+  border-radius: 16px;
+  max-width: 48vh;
+  height: 43vh;
+  position: relative;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.QRdisene8 .QRDis {
+  width: 90%;
+  height: 90%;
+  top: -3px;
+  margin: 15px auto;
+}
+.QRdisene8 .QRText {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 38vh;
+  height: 10vh;
+  font-size: 25px;
+  font-weight: 600;
+  border-radius: 16px;
+  background: var(--theme-color);
+  color: var(--dropdown-bg);
+  bottom: 8vh;
+}
+.QRdisene8 canvas {
+  width: 100%;
+  height: 100%;
+  max-width: 35vh;
+  max-height: 35vh;
+  position: relative;
+  top: -5px;
 }

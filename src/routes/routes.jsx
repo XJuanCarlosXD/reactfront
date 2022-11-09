@@ -29,7 +29,7 @@ const RouterReact = props => {
                 </Route>
                 <Route path='/Vcard'>
                     <Route index element={<Vcard />} />
-                    <Route path='/Vcard/Presentacion/QR/:id' element={<Vcard />} />
+                    <Route path='/Vcard/QR/:id' element={<Vcard />} />
 
                     <Route path='*' element={<Navigate replace to="/Proyectos" />} />
                 </Route>

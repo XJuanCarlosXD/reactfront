@@ -1,15 +1,10 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 /** Perfil Usuario */
 export const Profile = props => {
     return (
-        <motion.div
-            className="main-container"
-            initial={{ width: 0, transition: "all 0.1s ease-in" }}
-            animate={{ width: "100%", transition: "all 0.1s ease-in" }}
-            exit={{ x: window.innerWidth, transition: "all 0.1s ease-in-out" }}>
+        <div className="main-container">
             <div className="main-header">
                 <Link className="menu-link-main" href="#">Perfil</Link>
             </div>
@@ -48,17 +43,13 @@ export const Profile = props => {
                     </div>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
 export const Password = props => {
     return (
-        <motion.div
-            className="main-container"
-            initial={{ width: 0, transition: "all 0.1s ease-in" }}
-            animate={{ width: "100%", transition: "all 0.1s ease-in" }}
-            exit={{ x: window.innerWidth, transition: "all 0.1s ease-in" }}>
+        <div className="main-container">
             <div className="main-header">
                 <Link className="menu-link-main" href="#">Configuración Contraseña</Link>
             </div>
@@ -78,16 +69,12 @@ export const Password = props => {
                     </div>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 export const Security = props => {
     return (
-        <motion.div
-            className="main-container"
-            initial={{ width: 0, transition: "all 0.1s ease-in" }}
-            animate={{ width: "100%", transition: "all 0.1s ease-in" }}
-            exit={{ x: window.innerWidth, transition: "all 0.1s ease-in" }}>
+        <div className="main-container">
             <div className="main-header">
                 <Link className="menu-link-main" href="#">Configuraciónes de Seguridad 🔐</Link>
             </div>
@@ -104,6 +91,6 @@ export const Security = props => {
                     </div>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };

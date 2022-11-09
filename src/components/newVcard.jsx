@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import StepWizard from "react-step-wizard";
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import QRCodeStyling from 'qr-code-styling';
 import html2canvas from 'html2canvas';
 import { useForm } from "react-hook-form";
@@ -77,10 +76,12 @@ const NewVcard = () => {
             await addDoc(VcardDataColletion, arraydata).then(async () => {
                 const q = await getDocs(query(VcardDataColletion, orderBy('createAt', 'desc'), limit(1)));
                 const id = q.docs.map((row) => (row.id));
-                qrCode.update({ data: `http://localhost:3000/Vcard/Presentacion/QR/${id[0]}` });
+                qrCode.update({ data: `http://localhost:3000/Vcard/QR/${id[0]}` });
                 const reference = doc(db, "VcardData", id[0]);
                 await updateDoc(reference, { QRdata: { ...qrCode._options } });
             }).then(() => {
+                onDownloadClick();
+            }).then(()=>{
                 navigate("/Proyectos");
             })
         } catch (error) {
@@ -184,11 +185,7 @@ const NewVcard = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id])
     return (
-        <motion.div
-            className="main-container"
-            initial={{ opacity: 0, transition: "all 0.1s ease-in" }}
-            animate={{ opacity: 1, transition: "all 0.1s ease-in" }}
-            exit={{ opacity: 0, transition: "all 0.1s ease-in-out" }}>
+        <div className="main-container">
             <div className="main-header">
                 <Link className="menu-link-main" href="#">Nueva Vcard</Link>
             </div>
@@ -228,7 +225,7 @@ const NewVcard = () => {
                         </StepWizard>
                     </div>
                     <div className={`caja QR${marco}`}>
-                        <div ref={printRef} className={`caja`} style={{ opacity: watch('form') ? 1 : 0, transition: "all 0.3s ease-in" }}>
+                        <div ref={printRef} className={`caja`} style={{ opacity: watch('form') ? 1 : 0, transition: "all 0.3s ease-in", background: "var(--theme-bg-color)" }}>
                             <div className={`boxQR-conten QR${marco}`}>
                                 <div className='counten'>
                                     <div className='circle'></div>
@@ -254,7 +251,7 @@ const NewVcard = () => {
                     <Loading isActive={isActive} />
                 </div>
             </form>
-        </motion.div>
+        </div>
     );
 };
 

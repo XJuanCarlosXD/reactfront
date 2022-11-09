@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { collection, getDocs, deleteDoc, addDoc, getDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import html2canvas from 'html2canvas';
@@ -56,11 +55,7 @@ export const Proyect = props => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
-        <motion.div
-            className="main-container"
-            initial={{ opacity: 0, transition: "all 0.1s ease-in" }}
-            animate={{ opacity: 1, transition: "all 0.1s ease-in" }}
-            exit={{ opacity: 0, transition: "all 0.1s ease-in-out" }}>
+        <div className="main-container">
             <div className="main-header">
                 <Link className="menu-link-main" href="#">Todos los Proyectos</Link>
                 <div className="header-menu">
@@ -145,7 +140,7 @@ export const Proyect = props => {
                                             </div>
                                             <span className="tooltiptext" style={{ width: "70px", left: "-10px", top: "-36px" }}>Menu</span>
                                         </div>
-                                        <QRdonwload isActive={isOpen} index={index} setIsActive={(value) => setIsopen(value)} />
+                                        <QRdonwload isActive={isOpen} marco={row.marco} index={index} setIsActive={(value) => setIsopen(value)} />
                                         <div className={`pop-up ${modal === index ? 'visible' : ''}`}>
                                             <div className="pop-up__title">Borrar este Proyecto
                                                 <svg onClick={() => setModal('')} className="close" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -175,7 +170,7 @@ export const Proyect = props => {
             </div>
             <Loading isActive={isActive} />
             <div className={`overlay-app ${modal !== '' ? 'is-active' : '' || isOpen !== '' ? 'is-active' : ''}`}></div>
-        </motion.div >
+        </div>
     );
 };
 export const Loading = props => {
@@ -215,20 +210,18 @@ const QRdonwload = props => {
                     <path d="M15 9l-6 6M9 9l6 6" />
                 </svg>
             </div>
-            <div className="checkbox-wrapper">
-                <div className='caja'>
-                    <div className='boxQR-conten' ref={printRef}>
-                        <div className='counten'>
-                            <div className='circle'></div>
-                            <div className='retangule'></div>
-                        </div>
-                        <div className='boxQR'>
-                            <div className='QRDis' id={`QRModal-${props.index + 1}`} />
-                            <div className='QRText'>Escaneame!</div>
-                        </div>
-                        <div className='counten-circle'>
-                            <div className='circle'></div>
-                        </div>
+            <div className={`box QRstyles QRdisene${props.marco}`} ref={printRef}>
+                <div className='boxQR-conten'>
+                    <div className='counten'>
+                        <div className='circle'></div>
+                        <div className='retangule'></div>
+                    </div>
+                    <div className='boxQR'>
+                        <div className='QRDis' id={`QRModal-${props.index + 1}`} />
+                        <div className='QRText'>Escaneame!</div>
+                    </div>
+                    <div className='counten-circle'>
+                        <div className='circle'></div>
                     </div>
                 </div>
             </div>
