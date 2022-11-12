@@ -181,9 +181,71 @@ body.light-mode .video-bg:before {
 .header-menu .button-Vcar a {
   color: var(--theme-color);
 }
+.btn {
+  text-decoration: none;
+  color: var(--theme-color);
+  cursor: pointer;
+}
+.sidenav {
+  display: none;
+  padding: 0px 20px;
+  width: 0;
+  top: 0vh;
+  position: relative;
+  z-index: 99;
+  transition-delay: 0.3s;
+  transition: 0.5s ease-in-out;
+}
+.sidenav.active {
+  transition: 0.5s ease-in-out;
+  height: 100vh;
+  width: 220px;
+  position: fixed;
+  left: 1px;
+  border-radius: 6px;
+  background: var(--border-color);
+  padding: 10px 20px;
+}
+.items {
+  padding: 20px 0;
+  position: relative;
+  left: -6vh;
+  display: none;
+}
+.active .items {
+  display: block;
+}
+.items ul {
+  list-style: none;
+}
+.items ul li {
+  background: rgba(255, 255, 255, 0.333);
+  margin: 10px 0;
+  height: 40px;
+  transition: 0.5s ease-in;
+  width: calc(200% - 65%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 16px;
+  letter-spacing: 1px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.items li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 0 10px;
+  letter-spacing: 1px;
+}
 @media screen and (max-width: 610px) {
   .header-menu a:not(.main-header-link) {
     display: none;
+  }
+  .sidenav {
+    display: block;
   }
 }
 .header-menu a.active,
@@ -307,6 +369,9 @@ body.light-mode .video-bg:before {
 }
 @media screen and (max-width: 945px) {
   .notification + svg {
+    display: none;
+  }
+  .search-bar {
     display: none;
   }
 }
@@ -708,11 +773,6 @@ body.light-mode .video-bg:before {
   box-shadow: 8px 0 0 0 var(--theme-color), 16px 0 0 0 var(--theme-color);
   transition: all 0.2s ease-in-out;
 }
-@media screen and (max-width: 415px) {
-  .adobe-product .menu {
-    display: none;
-  }
-}
 .dropdown {
   position: relative;
   height: 53px;
@@ -1015,8 +1075,8 @@ body.light-mode .video-bg:before {
   position: relative;
   flex-wrap: wrap;
   height: 40px;
-  overflow: hidden;
   top: -30px;
+  overflow: hidden;
   transition: all 3s ease-in-out;
   width: 220px;
 }
@@ -1120,12 +1180,22 @@ body.light-mode .video-bg:before {
 @media screen and (max-width: 565px) {
   .form .firt {
     width: 60px;
-    font-size: 16px;
+    font-size: 8px;
+    top: -60px;
+    right: 10px;
+    height: 110px;
+    overflow: inherit;
+    position: relative;
   }
-  .form .three {
-    display: none;
+  .form .firt h3 {
+    font-size: 14px;
   }
-  .form .second {
+  .form .text-date {
+    top: 5px;
+  }
+  .form .three,
+  .form .second,
+  .form::before {
     display: none;
   }
 }
@@ -1545,7 +1615,6 @@ button:hover .icon-container i {
   max-height: calc(100% - 26%);
   overflow-y: scroll;
   background: var(--border-color);
-  /* background: rgb(255 255 255 / 35%); */
 }
 .caja-dinamica {
   width: 100px;
@@ -1668,7 +1737,7 @@ button:hover .icon-container i {
   border-radius: 7px;
   width: 100%;
   height: 100%;
-  background-color: var(--content-bg);
+  background: var(--content-bg);
 }
 .Form-Control {
   height: 40px;
@@ -2815,6 +2884,44 @@ input[type="checkbox"] {
 .boxQR-conten .QRDis canvas {
   border-radius: 0;
 }
+@media screen and (max-width: 480px) {
+  .boxQR-conten {
+    position: absolute;
+    height: max-content;
+    top: 6vh;
+  }
+  .boxQR-conten .QRDis {
+    margin: 10px;
+    top: 0;
+  }
+  .boxQR-conten.QR1 .boxQR,
+  .boxQR-conten.QR8 .boxQR {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  .boxQR-conten.QR4 .boxQR,
+  .boxQR-conten.QR5 .boxQR,
+  .boxQR-conten.QR6 .boxQR,
+  .boxQR-conten.QR7 .boxQR,
+  .boxQR-conten.QR9 {
+    height: 45vh;
+  }
+  .boxQR-conten.QR1 .boxQR .circle,
+  .boxQR-conten.QR6 .boxQR .circle {
+    position: fixed;
+    bottom: 34vh;
+    right: 16.5em;
+    transition: all 0.3s ease-in;
+  }
+  .boxQR-conten.QR1 .QRText,
+  .boxQR-conten.QR8 .QRText {
+    bottom: calc(100% - 65%);
+    width: 30vh;
+    height: 8vh;
+  }
+}
 .img-content img {
   width: 50px;
   height: 50px;
@@ -2843,6 +2950,32 @@ input[type="checkbox"] {
   -webkit-animation: logo 5s linear infinite alternate;
   animation: logo 5s linear infinite alternate;
 }
+@media screen and (max-width: 480px) {
+  .img-content {
+    font-size: 5vh;
+  }
+  .img-content img {
+    width: 35px;
+    height: 35px;
+    position: relative;
+    top: -3.5vh;
+    left: 6vh;
+  }
+  .img-content .animation {
+    position: relative;
+    top: -10vh;
+    height: 10px;
+  }
+  .img-content .animation div {
+    font-size: 10vh;
+    position: relative;
+    top: 3vh;
+  }
+  .content-wrapper-img {
+    display: none;
+  }
+}
+
 @-webkit-keyframes logo {
   from,
   20% {
@@ -2943,4 +3076,254 @@ input[type="checkbox"] {
   max-height: 35vh;
   position: relative;
   top: -5px;
+}
+.btn-container a {
+  text-decoration: none;
+}
+@media screen and (max-width: 480px) {
+  .btn-container.detalle {
+    display: none;
+  }
+  .btn-container button {
+    --width: 100px;
+    --height: 30px;
+  }
+  .btn-container button.btn-save {
+    position: fixed;
+    top: calc(100% - 80vh);
+    right: 0;
+  }
+  .Previews div canvas {
+    width: 15vh;
+    height: 15vh;
+  }
+  .Previews {
+    width: 15vh;
+    height: 15vh;
+  }
+}
+.Form-Control.CUADRO {
+  margin-bottom: 40px;
+}
+.btn-profile,
+.btn-close {
+  visibility: hidden;
+}
+/** Stylos de Celular */
+@media screen and (max-width: 950px) {
+  .caja .caja,
+  .caja.QRRR {
+    visibility: hidden;
+  }
+  .Form-Control.row {
+    width: calc(100% - 10%);
+  }
+  .caja .caja {
+    left: 0;
+    top: 0;
+    margin: 0;
+    z-index: 99;
+    max-width: 100%;
+    max-height: 100%;
+    transition: all 0.7s ease-in;
+  }
+  .btn-profile {
+    visibility: visible;
+    font-size: 2.5vh;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 25px;
+    margin-left: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: var(--theme-bg-color);
+    color: var(--theme-color);
+    border: 3px solid var(--theme-color);
+  }
+  .caja.active .btn-close {
+    visibility: visible;
+  }
+  .btn-close {
+    font-size: 35px;
+    z-index: 999;
+    top: 10px;
+    right: 25px;
+    cursor: pointer;
+    position: fixed;
+  }
+  .caja.active .caja {
+    visibility: visible;
+  }
+  .overlay-app {
+    background: var(--dropdown-bg);
+  }
+  .Form-Control.CUADRO {
+    position: relative;
+    margin-bottom: 10vh;
+    top: 7vh;
+    display: flex;
+    font-size: 0;
+    flex-direction: row;
+  }
+  .Form-Control.IMG12 {
+    display: flex;
+    font-size: 0;
+    margin-bottom: -15px;
+    flex-direction: row;
+  }
+  .Form-Control.QRMARCOS {
+    display: flex;
+    flex-direction: row;
+    font-size: 0;
+    position: relative;
+    left: -1vh;
+  }
+  .Form-Control.QRMARCOS.QRMARCO {
+    display: block;
+    position: relative;
+    width: 38vh;
+    height: 12vh;
+    left: 1vh;
+    overflow-x: scroll;
+  }
+  .Form-Control.QRMARCOS.QRMARCO .cuadro {
+    left: 7vh;
+  }
+  .Form-Control.QR{
+    display: flex;
+    margin-top: 8vh;
+    flex-direction: row;
+  }
+  .Form-Control.QR select:hover{
+    width: 30vh;
+  }
+  input[type='checkbox']{
+    visibility: hidden;
+  }
+  .Form-Control.checkbox{
+    position: relative;
+    top: -25px;
+    font-size: 12px;
+  }
+  .Form-Control.QR select{
+    position: relative;
+    width: 30vh;
+    left: -10vh;
+  }
+  .Form-Control.QR button{
+    position: relative;
+    width: 30vh;
+    left: -10vh;
+  }
+  .Form-Control input[type="file"] {
+    width: 16vh;
+    height: 65px;
+    position: relative;
+    margin-right: 0;
+    top: -8px;
+  }
+  .Form-Control.margenes{
+    display: block;
+  }
+  .Form-Control.marco {
+    position: relative;
+    right: 2.5vh;
+  }
+  .Form-Control .avatar {
+    width: 45px;
+    height: 45px;
+    top: 6px;
+    right: 55px;
+  }
+  .Form-Control.IMG12 .cuadro {
+    width: 80px;
+    height: 60px;
+    border: none;
+    margin-left: 10px;
+    left: -4px;
+    top: 4px;
+  }
+  .Form-Control.contact {
+    margin-bottom: 15vh;
+  }
+  .Form-Control.contact button {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+  .Form-Control select {
+    display: block;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    position: relative;
+    left: 10px;
+  }
+  .Form-Control select:focus {
+    padding: 0 20px;
+  }
+  .Form-vcard {
+    justify-content: center;
+    border-radius: 7px;
+    width: 100%;
+    height: 100%;
+  }
+  .Form-Control {
+    display: block;
+    width: calc(100% - 18%);
+    flex-direction: column;
+  }
+  .location {
+    display: none;
+  }
+  .content-wrapper.rj45 {
+    position: relative !important;
+    overflow-y: scroll;
+    margin: 0;
+  }
+  .content-form.rght6 {
+    margin-right: 0;
+    margin-left: -10px;
+    position: absolute;
+    width: calc(100% - 5%);
+  }
+  .col {
+    left: 10px;
+    margin: 6px;
+    width: calc(80px - 40px);
+    height: calc(80px - 40px);
+  }
+  .col .box:before {
+    font-size: 25px;
+  }
+  .col .box:after {
+    font-size: 20px;
+  }
+  .Form-vcard {
+    width: 100%;
+    position: relative;
+  }
+  .Form-Control input {
+    display: block;
+    width: 100%;
+    margin: 10px;
+  }
+  .content-form.social {
+    position: relative;
+  }
+  .content-form.social .Form-Control input {
+    width: 100%;
+  }
+  .content-form.social .icon-social .col .box:after {
+    font-size: 20px;
+  }
+  .content-form.social .icon-social .col {
+    top: 6vh;
+  }
+  .Form-Control.SOCIAL {
+    display: block;
+    margin-bottom: calc(100% - 30vh);
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { collection, getDocs, deleteDoc, addDoc, getDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
@@ -11,10 +11,27 @@ export const Proyect = props => {
     const [dropdown, setDropdown] = useState(true);
     const [check, setChek] = useState(false);
     const [isOpen, setIsopen] = useState('');
-    const [search, setSeacrh] = useState(false);
     const [isActive, setisActive] = useState('is-active');
     const [data, setData] = useState([]);
     const VcardDataColletion = collection(db, "VcardData");
+    const onDownloadClick = async (fileExt) => {
+        const element = document.getElementById('PrintRef');
+        const canvas = await html2canvas(element);
+
+        const data = canvas.toDataURL(`image/${fileExt}`);
+        const link = document.createElement('a');
+
+        if (typeof link.download === 'string') {
+            link.href = data;
+            link.download = `image.${fileExt}`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            window.open(data);
+        }
+    };
     const QRContainer = (row, index) => {
         var qrCode = new QRCodeStyling(row.QRdata);
         qrCode.update({ width: 100, height: 100 });
@@ -60,7 +77,7 @@ export const Proyect = props => {
                 <Link className="menu-link-main" href="#">Todos los Proyectos</Link>
                 <div className="header-menu">
                     <div className='button-Vcar'>
-                        <Link className="effect1" to="/Proyectos/new/Vcard">
+                        <Link className="effect1 main-header-link" to="/Proyectos/new/Vcard">
                             Crear una Vcard!
                             <span className="bg"></span>
                         </Link>
@@ -69,14 +86,9 @@ export const Proyect = props => {
             </div>
             <div className={`content-wrapper ${activeLink !== '' ? 'overlay' : ''}`}>
                 <div className="content-section">
-                    <div className={search ? 'header wide' : ''}>
                         <div className="header-menu">
                             <div className="content-section-title">Mis Proyectos</div>
                         </div>
-                        <div className="search-bar" style={{ marginLeft: "460px", marginTop: "-40px" }}>
-                            <input type="text" onFocus={() => setSeacrh(!search)} onBlur={() => setSeacrh(!search)} placeholder="Search" />
-                        </div>
-                    </div>
                     <br />
                     <ul>
                         {data.map((row, index) => {
@@ -89,7 +101,11 @@ export const Proyect = props => {
                             }, 0);
                             return (
                                 <li className="adobe-product" key={index}>
-                                    <div className="Previews"><div id={`QRlist-${index + 1}`} /></div>
+                                    <div className="Previews">
+                                        <Link to={`/Vcard/QR/${row.id}`}>
+                                            <div id={`QRlist-${index + 1}`} />
+                                        </Link>
+                                    </div>
                                     <div className="form">
                                         <div className="firt">
                                             <h3> Virtual Card</h3>
@@ -108,18 +124,20 @@ export const Proyect = props => {
                                         </div>
                                     </div>
                                     <div className="button-wrapper">
-                                        <div className="btn-container">
-                                            <button>
-                                                <span className="text">Detalle</span>
-                                                <div className="icon-container">
-                                                    <div className="icon icon--left">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd"><path d="M21.883 12l-7.527 6.235.644.765 9-7.521-9-7.479-.645.764 7.529 6.236h-21.884v1h21.883z" /></svg>
+                                        <div className="btn-container detalle">
+                                            <Link to={`/Vcard/QR/${row.id}`}>
+                                                <button type='button'>
+                                                    <span className="text">Detalle</span>
+                                                    <div className="icon-container">
+                                                        <div className="icon icon--left">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd"><path d="M21.883 12l-7.527 6.235.644.765 9-7.521-9-7.479-.645.764 7.529 6.236h-21.884v1h21.883z" /></svg>
+                                                        </div>
+                                                        <div className="icon icon--right">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd"><path d="M21.883 12l-7.527 6.235.644.765 9-7.521-9-7.479-.645.764 7.529 6.236h-21.884v1h21.883z" /></svg>
+                                                        </div>
                                                     </div>
-                                                    <div className="icon icon--right">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd"><path d="M21.883 12l-7.527 6.235.644.765 9-7.521-9-7.479-.645.764 7.529 6.236h-21.884v1h21.883z" /></svg>
-                                                    </div>
-                                                </div>
-                                            </button>
+                                                </button>
+                                            </Link>
                                         </div>
                                         <div className="tooltip">
                                             <div className="donwload" onClick={() => setIsopen(index)}>
@@ -140,7 +158,12 @@ export const Proyect = props => {
                                             </div>
                                             <span className="tooltiptext" style={{ width: "70px", left: "-10px", top: "-36px" }}>Menu</span>
                                         </div>
-                                        <QRdonwload isActive={isOpen} marco={row.marco} index={index} setIsActive={(value) => setIsopen(value)} />
+                                        <QRdonwload
+                                            isActive={isOpen}
+                                            marco={row.marco}
+                                            index={index}
+                                            onDownloadClick={onDownloadClick}
+                                            setIsActive={(value) => setIsopen(value)} />
                                         <div className={`pop-up ${modal === index ? 'visible' : ''}`}>
                                             <div className="pop-up__title">Borrar este Proyecto
                                                 <svg onClick={() => setModal('')} className="close" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -170,7 +193,7 @@ export const Proyect = props => {
             </div>
             <Loading isActive={isActive} />
             <div className={`overlay-app ${modal !== '' ? 'is-active' : '' || isOpen !== '' ? 'is-active' : ''}`}></div>
-        </div>
+        </div >
     );
 };
 export const Loading = props => {
@@ -182,26 +205,7 @@ export const Loading = props => {
         </div>
     )
 };
-const QRdonwload = props => {
-    const printRef = useRef();
-    const onDownloadClick = async (fileExt) => {
-        const element = printRef.current;
-        const canvas = await html2canvas(element);
-
-        const data = canvas.toDataURL(`image/${fileExt}`);
-        const link = document.createElement('a');
-
-        if (typeof link.download === 'string') {
-            link.href = data;
-            link.download = `image.${fileExt}`;
-
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else {
-            window.open(data);
-        }
-    };
+const QRdonwload = (props) => {
     return (
         <div className={`pop-up ${props.isActive === props.index ? 'visible' : ''} donwload`}>
             <div className="pop-up__title">Descargar QR
@@ -210,7 +214,7 @@ const QRdonwload = props => {
                     <path d="M15 9l-6 6M9 9l6 6" />
                 </svg>
             </div>
-            <div className={`box QRstyles QRdisene${props.marco}`} ref={printRef}>
+            <div className={`box QRstyles QRdisene${props.marco}`} id='PrintRef'>
                 <div className='boxQR-conten'>
                     <div className='counten'>
                         <div className='circle'></div>
@@ -227,7 +231,7 @@ const QRdonwload = props => {
             </div>
             <div className="checkbox-wrapper" style={{ position: "absolute", right: "80px", top: "110px" }}>
                 <div className="btn-container" style={{ margin: "15px" }}>
-                    <button onClick={() => { onDownloadClick('png'); props.setIsActive('') }}>
+                    <button onClick={() => { props.onDownloadClick('png'); props.setIsActive('') }}>
                         <span className="text">PNG 🖼️</span>
                         <div className="icon-container">
                             <div className="icon icon--left">
@@ -240,7 +244,7 @@ const QRdonwload = props => {
                     </button>
                 </div>
                 <div className="btn-container" style={{ margin: "15px" }}>
-                    <button onClick={() => { onDownloadClick('jpeg'); props.setIsActive('') }}>
+                    <button onClick={() => { props.onDownloadClick('jpeg'); props.setIsActive('') }}>
                         <span className="text">JPEG 🖼️</span>
                         <div className="icon-container">
                             <div className="icon icon--left">
@@ -253,7 +257,7 @@ const QRdonwload = props => {
                     </button>
                 </div>
                 <div className="btn-container" style={{ margin: "15px" }}>
-                    <button onClick={() => { onDownloadClick('svg'); props.setIsActive('') }}>
+                    <button onClick={() => { props.onDownloadClick('svg'); props.setIsActive('') }}>
                         <span className="text">SVG 💻</span>
                         <div className="icon-container">
                             <div className="icon icon--left">

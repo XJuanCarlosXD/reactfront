@@ -6,6 +6,7 @@ const Navbar = props => {
     const Theme = () => {
         document.body.classList.toggle('light-mode');
     }
+    const [active, setActive] = React.useState(false);
     return (
         <>
             <div className="dark-light" onClick={Theme}>
@@ -20,6 +21,17 @@ const Navbar = props => {
                         <NavLink className="menu-link notify" to='/Proyectos'> <i className="fa-solid fa-sliders"></i> Proyectos</NavLink>
                         <NavLink className="menu-link" to='/Cuenta'><i className="fa-solid fa-user-gear"></i> Mi Cuenta</NavLink>
                         <NavLink className="menu-link notify" to='/Configuracion'><i className="fa-solid fa-gear"></i> Configuracion</NavLink>
+                    </div>
+                    <div className={`sidenav ${active ? 'active' : ''}`} onClick={() => setActive(!active)}>
+                        <span className="btn"><i className="fa-solid fa-bars fa-2x"></i></span>
+                        <div className="items">
+                            <ul>
+                                <li><NavLink to='/Analisis'><i className="fa-solid fa-chart-simple"></i> Analisis</NavLink></li>
+                                <li><NavLink to='/Proyectos'> <i className="fa-solid fa-sliders"></i> Proyectos</NavLink></li>
+                                <li><NavLink to='/Cuenta'><i className="fa-solid fa-user-gear"></i> Mi Cuenta</NavLink></li>
+                                <li><NavLink to='/Configuracion'><i className="fa-solid fa-gear"></i> Configuracion</NavLink></li>
+                            </ul>
+                        </div>
                     </div>
                     <div className="search-bar">
                         <input type="text" placeholder="Search" style={{ opacity: 0 }} />
@@ -41,6 +53,7 @@ const Navbar = props => {
                 <section className="wrapper">
                     <Sidebar />
                     <Outlet></Outlet>
+                    <div className={`overlay-app ${active ? 'is-active' : ''}`}></div>
                 </section>
             </div>
         </>

@@ -15,7 +15,7 @@ const defaultState = [{ select: "Email", title: "", icon: "fa-solid fa-envelope"
 var qrCode = new QRCodeStyling({
     width: 200,
     height: 200,
-    data: "http://localhost:3000/Vcard/Presentacion/QR/",
+    data: `http://${window.location.hostname}/Vcard/Presentacion/QR/`,
     image: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
     dotsOptions: {
         color: "#B10fd1",
@@ -52,6 +52,7 @@ const NewVcard = () => {
     const [img, setImg] = useState('https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg');
     const [rows, setRows] = useState(defaultState);
     const [isActive, setisActive] = useState('');
+    const [active, setActive] = useState(false);
     const [fondo, setImagefondo] = useState('');
     const [fileExt, setfileExt] = useState('png');
     const [data, setDataa] = useState({ ...qrCode._options });
@@ -76,12 +77,13 @@ const NewVcard = () => {
             await addDoc(VcardDataColletion, arraydata).then(async () => {
                 const q = await getDocs(query(VcardDataColletion, orderBy('createAt', 'desc'), limit(1)));
                 const id = q.docs.map((row) => (row.id));
-                qrCode.update({ data: `http://localhost:3000/Vcard/QR/${id[0]}` });
+                qrCode.update({ data: `http://${window.location.hostname}/Vcard/QR/${id[0]}` });
                 const reference = doc(db, "VcardData", id[0]);
                 await updateDoc(reference, { QRdata: { ...qrCode._options } });
             }).then(() => {
+                setActive(!active);
                 onDownloadClick();
-            }).then(()=>{
+            }).then(() => {
                 navigate("/Proyectos");
             })
         } catch (error) {
@@ -110,6 +112,10 @@ const NewVcard = () => {
             console.log(error);
         }
     };
+    const SeeProfile = () => {
+        setActive(!active);
+        document.querySelector('.overlay-app').classList.toggle('is-active');
+    }
     const handleOnChange = (index, name, value) => {
         const copyRows = [...rows];
         copyRows[index] = {
@@ -188,12 +194,19 @@ const NewVcard = () => {
         <div className="main-container">
             <div className="main-header">
                 <Link className="menu-link-main" href="#">Nueva Vcard</Link>
+                <div className="header-menu">
+                    <div className='btn-profile' onClick={SeeProfile}>
+                        <div role={'button'}>
+                        <i className="fa-solid fa-qrcode"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <form className="content-wrapper" onSubmit={id !== undefined ? handleSubmit(onUpload) : handleSubmit(onSubmit)}>
-                <div className='content-form'>
+            <form className="content-wrapper rj45" onSubmit={id !== undefined ? handleSubmit(onUpload) : handleSubmit(onSubmit)}>
+                <div className='content-form rght6'>
                     <div className='Form-vcard'>
                         <StepWizard nav={<ButtonWizzar setValue={setValue} />}>
-                            <div>
+                            <>
                                 <FormVcard
                                     setImg={(value) => setImg(value)}
                                     setFondo={(value) => setImagefondo(value)}
@@ -214,7 +227,7 @@ const NewVcard = () => {
                                     watch={watch}
                                     errors={errors}
                                     handleOnRemove={handleOnRemove} />
-                            </div>
+                            </>
                             <FormTree
                                 setFileExt={(value) => setfileExt(value)}
                                 onDownloadClick={onDownloadClick}
@@ -224,8 +237,11 @@ const NewVcard = () => {
                                 id={id} />
                         </StepWizard>
                     </div>
-                    <div className={`caja QR${marco}`}>
-                        <div ref={printRef} className={`caja`} style={{ opacity: watch('form') ? 1 : 0, transition: "all 0.3s ease-in", background: "var(--theme-bg-color)" }}>
+                    <div className={`caja ${active ? 'active' : ''} QR${marco}`}>
+                        <div className='btn-close' onClick={SeeProfile}>
+                            <i className="fa-solid fa-xmark"></i>
+                        </div>
+                        <div ref={printRef} className={`caja QRRR`} style={{ opacity: watch('form') ? 1 : 0, transition: "all 0.3s ease-in", background: "var(--theme-bg-color)" }}>
                             <div className={`boxQR-conten QR${marco}`}>
                                 <div className='counten'>
                                     <div className='circle'></div>
@@ -296,7 +312,7 @@ const FormThoRow = (props) => {
     };
     return (
         <>
-            <div className="Form-Control">
+            <div className="Form-Control contact">
                 <select id='info' defaultValue={"👉 Selecciona una opcion"} value={select} onBlur={onBlur} onChange={onSelect}>
                     <option hidden>👉 Selecciona una opcion</option>
                     <option value={'Email'}>📧 Email</option>
@@ -309,7 +325,7 @@ const FormThoRow = (props) => {
                 <button type='button' onClick={props.onRemove}><i className="fa-solid fa-minus"></i></button>
             </div>
             {select === 'Ubicación' ? (
-                <div onChange={onChangeInput}>
+                <div className='location' onChange={onChangeInput}>
                     <div className="Form-Control">
                         <input type="text" className={props.errors.direccion && 'error'} placeholder='Dirección' {...props.register('direccion', { required: true })} />
                         <input type="text" className={props.errors.numeracion && 'error'} placeholder='Numeración' {...props.register('numeracion', { required: true })} />
@@ -364,10 +380,10 @@ const FormTwo = props => {
         props.setRSocial(copyRows);
     };
     return (
-        <div>
+        <>
             <div className="header">
                 <h3 className="header-menu">Información de Contacto 📞</h3>
-                <div className="tooltip" style={{ left: "300px" }}>
+                <div className="tooltip" style={{ left: "0px" }}>
                     <button type='button' onClick={props.handleOnAdd}><i className="fa-solid fa-plus"></i></button>
                     <span className="tooltiptext" style={{ left: "-30px", top: "-25px" }}>Agregar</span>
                 </div>
@@ -409,13 +425,13 @@ const FormTwo = props => {
                     <div className='icon-social'>
                         <Social {...row} onClick={() => handleRemove(index)} position={row.icon} />
                     </div>
-                    <div className="Form-Control">
+                    <div className="Form-Control SOCIAL">
                         <input type="text" value={row.redirecionable} onChange={(e) => handleOnChange(index, 'redirecionable', e.target.value)} placeholder='🔗URL' />
                         <input type="text" value={row.url} onChange={(e) => handleOnChange(index, 'url', e.target.value)} placeholder='✏️Texto' />
                     </div>
                 </div>
             ))}
-        </div >
+        </>
     )
 };
 const PreviewsVcard = props => {
@@ -519,7 +535,7 @@ const FormVcard = props => {
         }
     }, [props.data.fondo, props.data.img, props.id])
     return (
-        <div>
+        <>
             <div className="header">
                 <h3 className="header-menu">📇 Estilo de Vcard</h3>
             </div>
@@ -530,7 +546,7 @@ const FormVcard = props => {
                 <input type="text" className={props.errors.name && 'error'} {...props.register('name', { required: true })} placeholder="✏️ Nombre" />
                 <input type="text" className={props.errors.position && 'error'} {...props.register('position', { required: true })} placeholder="✏️ Posicion" />
             </div>
-            <div className="Form-Control" style={{ marginBottom: "40px" }}>
+            <div className="Form-Control CUADRO">
                 <input type="file" id='fondo1' {...props.register('originalImagenFondo', { onChange: handefondo })} style={{ display: "none" }} />
                 <div className="tooltip" onClick={() => document.getElementById('color').click()}>
                     <button type='button' className={props.watch('fondoActive') === false ? 'cuadro' : 'cuadro active'} onClick={() => props.setValue('fondoActive', true)}>
@@ -554,14 +570,14 @@ const FormVcard = props => {
             <div className="header">
                 <h3 className="header-menu">🖼️ Imagen Perfil</h3>
             </div>
-            <div className="Form-Control" style={{ height: "100%" }}>
+            <div className="Form-Control IMG12" style={{ height: "100%" }}>
                 <input type="file" id='file' {...props.register('originalImageprofile', { onChange: handefile })} />
                 <img className={`avatar`} src={image} alt='' onClick={() => document.getElementById('file').click()} />
                 <button type='button' className={props.watch('radius') === "50%" ? 'cuadro active' : 'cuadro'} onClick={() => props.setValue('radius', "50%")}><img src={image} alt='' className='circle' /></button>
                 <button type='button' className={props.watch('radius') === "4px" ? 'cuadro active' : 'cuadro'} onClick={() => props.setValue('radius', "4px")}><img src={image} alt='' className='cuadre' /></button>
                 <h4>Margen de Imagen</h4>
             </div>
-        </div>
+        </>
     );
 };
 const ButtonWizzar = props => {
@@ -593,7 +609,7 @@ const ButtonWizzar = props => {
                     </div>
                 </button>
             </div>
-            <button type="submit"><span className="text">💾 Guardar</span></button>
+            <button className='btn-save' type="submit"><span className="text">💾 Guardar</span></button>
         </div>
     )
 };
@@ -702,7 +718,7 @@ const FormTree = (props) => {
             <div className="header">
                 <h3 className="header-menu">Estilo de Puntos QR  ◻️</h3>
             </div>
-            <div className="Form-Control" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
+            <div className="Form-Control QRMARCOS QRMARCO" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
                 {listOption.map((row, index) => (
                     <div className="tooltip" key={index} onClick={() => { qrCode.update({ dotsOptions: { type: row.qrCode } }); setActiveLink(index) }}>
                         <button type='button' className={`cuadro ${activeLink === index ? "active click12" : ""}`}><div className='cuadre'><div className={row.qrCode} /></div></button>
@@ -710,7 +726,7 @@ const FormTree = (props) => {
                     </div>
                 ))}
             </div>
-            <div className="Form-Control" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
+            <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
                 <div className="tooltip" onClick={() => setActive2(true)}>
                     <button type='button' className={!active2 ? 'cuadro' : 'cuadro active'}>
                         <div className='cuadre solid' /></button>
@@ -741,7 +757,7 @@ const FormTree = (props) => {
             <div className="header">
                 <h3 className="header-menu">Esquinas Estilo Cuadrado QR  ◻️</h3>
             </div>
-            <div className="Form-Control" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
+            <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
                 {listOptionEz.map((row, index) => (
                     <div className="tooltip" key={index} onClick={() => { qrCode.update({ cornersSquareOptions: { type: row.qrCode } }); setActiveLinkEz(index) }}>
                         <button type='button' className={`cuadro ${activeLinkEz === index ? "active" : ""}`}><div className='cuadre'><div className={row.qrCode} /></div></button>
@@ -749,7 +765,7 @@ const FormTree = (props) => {
                     </div>
                 ))}
             </div>
-            <div className="Form-Control" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
+            <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
                 <div className="tooltip" onClick={() => setActive(true)}>
                     <button type='button' className={!active ? 'cuadro' : 'cuadro active'}>
                         <div className='cuadre solid' /></button>
@@ -780,7 +796,7 @@ const FormTree = (props) => {
             <div className="header">
                 <h3 className="header-menu">Fondo de QR  ◻️</h3>
             </div>
-            <div className="Form-Control" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
+            <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
                 <input type="file" id='fondo1' style={{ display: "none" }} />
                 <div className="tooltip" onClick={() => setBacground(true)}>
                     <button type='button' className={!background ? 'cuadro' : 'cuadro active'}>
@@ -813,7 +829,7 @@ const FormTree = (props) => {
             <div className="header">
                 <h3 className="header-menu">Logo de QR  ◻️</h3>
             </div>
-            <div className="Form-Control" style={{ marginBottom: "40px" }}>
+            <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px" }}>
                 <input type="file" id='fondo12' onChange={handefondo} style={{ display: "none" }} />
                 <div className="tooltip" onClick={() => document.getElementById('fondo12').click()}>
                     <button type='button' className={'cuadro'}><img src={logo} alt='' className='circle' /></button>
@@ -825,13 +841,13 @@ const FormTree = (props) => {
                 </div>
                 <h4 className="header-menu">Logo de QR  ◻️</h4>
             </div>
-            <div className="Form-Control" style={{ marginBottom: "20px" }}>
+            <div className="Form-Control checkbox" style={{ marginBottom: "20px" }}>
                 <div className="toggle">
                     <input type="checkbox" id='temp' defaultChecked={!check} checked={!check} onClick={() => { setCheck(!check); qrCode.update({ imageOptions: { hideBackgroundDots: check } }) }} />
                     <label htmlFor={'temp'}>Ocultar puntos de fondo</label>
                 </div>
             </div>
-            <div className="Form-Control" style={{ marginBottom: "40px" }}>
+            <div className="Form-Control QRMARCOS margenes" style={{ marginBottom: "40px" }}>
                 <input type="number" placeholder='Tamaño de la imagen' value={imagensize} onChange={(e) => { qrCode.update({ imageOptions: { imageSize: e.target.value } }); setImagenzize(e.target.value) }} min={0} max={1} step={0.1} />
                 <input type="number" placeholder='Margen' value={margin} onChange={(e) => { qrCode.update({ imageOptions: { margin: e.target.value } }); setMargin(e.target.value) }} min={0} max={50} />
             </div>
