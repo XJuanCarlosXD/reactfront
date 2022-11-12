@@ -2631,7 +2631,6 @@ input[type="checkbox"] {
     left: 60vh;
   }
 }
-
 @keyframes card {
   from,
   10% {
@@ -2688,7 +2687,6 @@ input[type="checkbox"] {
     content: "Cargando...";
   }
 }
-
 @keyframes loading {
   from,
   20% {
@@ -2703,6 +2701,17 @@ input[type="checkbox"] {
   100%,
   to {
     content: "Cargando...";
+  }
+}
+@media screen and (max-width: 480px) {
+  .LoadingCard::before{
+    font-size: 20vh;
+    left: 0vh;
+  }
+  .LoadingCard::after{
+    font-size: 25px;
+    top: -10vh;
+    left: 5vh;
   }
 }
 
