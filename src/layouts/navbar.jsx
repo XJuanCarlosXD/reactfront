@@ -14,7 +14,7 @@ const Navbar = props => {
                     <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
             </div>
             <div className='app'>
-                <nav className="header">
+                <nav className="header rjii">
                     <div className="menu-circle"></div>
                     <div className="header-menu">
                         <NavLink className="menu-link" to='/Analisis'><i className="fa-solid fa-chart-simple"></i> Analisis</NavLink>

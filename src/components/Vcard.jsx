@@ -20,7 +20,7 @@ const Vcard = props => {
     }, [])
     return (
         <div className='vCardPresentacion'>
-            {data?.profile?.fondo === '' ? (
+            {data?.profile?.fondo !== '' ? (
                 <img src={data?.profile?.fondo} alt='' className="caja-presentacion" />
             ) : (
                 <div style={{ backgroundColor: data?.profile?.colorFondo }} className="caja-presentacion"></div>

@@ -86,11 +86,11 @@ export const Proyect = props => {
             </div>
             <div className={`content-wrapper ${activeLink !== '' ? 'overlay' : ''}`}>
                 <div className="content-section">
-                        <div className="header-menu">
-                            <div className="content-section-title">Mis Proyectos</div>
-                        </div>
+                    <div className="header-menu">
+                        <div className="content-section-title">Mis Proyectos</div>
+                    </div>
                     <br />
-                    <ul>
+                    <ul className='tableQR'>
                         {data.map((row, index) => {
                             QRContainer(row, `QRlist-${index + 1}`);
                             setTimeout(() => {
@@ -103,7 +103,7 @@ export const Proyect = props => {
                                 <li className="adobe-product" key={index}>
                                     <div className="Previews">
                                         <Link to={`/Vcard/QR/${row.id}`}>
-                                            <div id={`QRlist-${index + 1}`} />
+                                            <div className="QRlist" id={`QRlist-${index + 1}`} />
                                         </Link>
                                     </div>
                                     <div className="form">
@@ -160,8 +160,9 @@ export const Proyect = props => {
                                         </div>
                                         <QRdonwload
                                             isActive={isOpen}
-                                            marco={row.marco}
+                                            marco={row?.marcoQR}
                                             index={index}
+                                            modal={isOpen}
                                             onDownloadClick={onDownloadClick}
                                             setIsActive={(value) => setIsopen(value)} />
                                         <div className={`pop-up ${modal === index ? 'visible' : ''}`}>
@@ -206,6 +207,25 @@ export const Loading = props => {
     )
 };
 const QRdonwload = (props) => {
+    const printRef = React.useRef();
+    const onDownloadClick = async (fileExt) => {
+        const element = printRef.current;
+        const canvas = await html2canvas(element);
+
+        const data = canvas.toDataURL(`image/${fileExt}`);
+        const link = document.createElement('a');
+
+        if (typeof link.download === 'string') {
+            link.href = data;
+            link.download = `image.${fileExt}`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            window.open(data);
+        }
+    };
     return (
         <div className={`pop-up ${props.isActive === props.index ? 'visible' : ''} donwload`}>
             <div className="pop-up__title">Descargar QR
@@ -214,24 +234,29 @@ const QRdonwload = (props) => {
                     <path d="M15 9l-6 6M9 9l6 6" />
                 </svg>
             </div>
-            <div className={`box QRstyles QRdisene${props.marco}`} id='PrintRef'>
-                <div className='boxQR-conten'>
-                    <div className='counten'>
-                        <div className='circle'></div>
-                        <div className='retangule'></div>
-                    </div>
-                    <div className='boxQR'>
-                        <div className='QRDis' id={`QRModal-${props.index + 1}`} />
-                        <div className='QRText'>Escaneame!</div>
-                    </div>
-                    <div className='counten-circle'>
-                        <div className='circle'></div>
+            <div className="conteng-pop-up">
+                <div className={`caja ${props.modal !== '' ? 'active' : ''} QR${props.marco?.marco}`}>
+                    <div ref={printRef} className={`caja QRRR`}>
+                        <div className={`boxQR-conten QR${props.marco?.marco}`}>
+                            <div className='counten'>
+                                <div className='circle'></div>
+                                <div className='retangule'></div>
+                            </div>
+                            <div className='boxQR' style={{ border: `5px solid ${props.marco?.color1m}`, background: props.marco?.color2B === '' ? props.marco?.color1B : `linear-gradient(${props.marco?.color1B},${props.marco?.color2B})` }}>
+                                <div className='QRDis' id={`QRModal-${props.index + 1}`} style={{ background: props.marco?.color2b === '' ? props.marco?.color1b : `linear-gradient(${props.marco?.color1b},${props.marco?.color2b})` }}  />
+                                <div className='QRText'>Escaneame!</div>
+                                <div className='circle'></div>
+                            </div>
+                            <div className='counten-circle'>
+                                <div className='circle'></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div className="checkbox-wrapper" style={{ position: "absolute", right: "80px", top: "110px" }}>
                 <div className="btn-container" style={{ margin: "15px" }}>
-                    <button onClick={() => { props.onDownloadClick('png'); props.setIsActive('') }}>
+                    <button onClick={() => { onDownloadClick('png'); props.setIsActive('') }}>
                         <span className="text">PNG 🖼️</span>
                         <div className="icon-container">
                             <div className="icon icon--left">
@@ -244,7 +269,7 @@ const QRdonwload = (props) => {
                     </button>
                 </div>
                 <div className="btn-container" style={{ margin: "15px" }}>
-                    <button onClick={() => { props.onDownloadClick('jpeg'); props.setIsActive('') }}>
+                    <button onClick={() => { onDownloadClick('jpeg'); props.setIsActive('') }}>
                         <span className="text">JPEG 🖼️</span>
                         <div className="icon-container">
                             <div className="icon icon--left">
@@ -257,7 +282,7 @@ const QRdonwload = (props) => {
                     </button>
                 </div>
                 <div className="btn-container" style={{ margin: "15px" }}>
-                    <button onClick={() => { props.onDownloadClick('svg'); props.setIsActive('') }}>
+                    <button onClick={() => { onDownloadClick('svg'); props.setIsActive('') }}>
                         <span className="text">SVG 💻</span>
                         <div className="icon-container">
                             <div className="icon icon--left">
@@ -287,5 +312,6 @@ const QRdonwload = (props) => {
                 </div>
             </div>
         </div>
-    )
+
+    );
 };

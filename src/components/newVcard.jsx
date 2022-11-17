@@ -52,6 +52,11 @@ const NewVcard = () => {
     const [img, setImg] = useState('https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg');
     const [rows, setRows] = useState(defaultState);
     const [isActive, setisActive] = useState('');
+    const [color1b, setColor1b] = useState('');
+    const [color2b, setColor2b] = useState('');
+    const [color1m, setColor1m] = useState('#FFFFFF');
+    const [color1B, setColor1B] = useState('#1400EB');
+    const [color2B, setColor2B] = useState('#ED0012');
     const [active, setActive] = useState(false);
     const [fondo, setImagefondo] = useState('');
     const [fileExt, setfileExt] = useState('png');
@@ -62,13 +67,16 @@ const NewVcard = () => {
     const ref = useRef(null);
     const onSubmit = async data => {
         const VcardDataColletion = collection(db, "VcardData");
+        setisActive('is-active');
+        setActive(!active);
+        setValue('form', true);
         try {
             const arraydata = {
                 nameProyect: data.proyectName,
                 active: true,
                 createAt: new Date(),
                 updateAt: new Date(),
-                marco: marco,
+                marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
                 QRdata: { ...qrCode._options },
                 contact: [...rows],
                 profile: { name: data.name, position: data.position, img: img, radius: data.radius, fondo: fondo, fondoActive: data.fondoActive, colorFondo: data.colorFondo, colorBotones: data.colorButton },
@@ -81,16 +89,19 @@ const NewVcard = () => {
                 const reference = doc(db, "VcardData", id[0]);
                 await updateDoc(reference, { QRdata: { ...qrCode._options } });
             }).then(() => {
-                setActive(!active);
                 onDownloadClick();
             }).then(() => {
                 navigate("/Proyectos");
             })
         } catch (error) {
+            setisActive('');
             console.log(error);
         }
     };
     const onUpload = async data => {
+        setisActive('is-active');
+        setActive(!active);
+        setValue('form', true);
         const VcardDataColletion = doc(db, "VcardData", id);
         console.log('actulizando...');
         try {
@@ -98,7 +109,7 @@ const NewVcard = () => {
                 nameProyect: data.proyectName,
                 active: true,
                 updateAt: new Date(),
-                marco: marco,
+                marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
                 QRdata: { ...qrCode._options },
                 contact: [...rows],
                 profile: { name: data.name, position: data.position, img: img, radius: data.radius, fondo: fondo, fondoActive: data.fondoActive, colorFondo: data.colorFondo, colorBotones: data.colorButton },
@@ -106,9 +117,12 @@ const NewVcard = () => {
             };
             await updateDoc(VcardDataColletion, arraydata).then(() => {
                 console.log('datos actulizados');
+                onDownloadClick();
+            }).then(() => {
                 navigate("/Proyectos");
             })
         } catch (error) {
+            setisActive('');
             console.log(error);
         }
     };
@@ -161,7 +175,12 @@ const NewVcard = () => {
                 setRows([...data.contact]);
                 setValue('name', data.profile.name);
                 setValue('position', data.profile.position);
-                setMarco(data.marco);
+                setMarco(data.marcoQR.marco);
+                setColor1B(data.marcoQR.color1B);
+                setColor2B(data.marcoQR.color2B);
+                setColor1b(data.marcoQR.color1b);
+                setColor2b(data.marcoQR.color2b);
+                setColor1m(data.marcoQR.color1m);
                 setValue('fondoActive', data.profile.fondoActive);
                 setValue('colorBotones', data.profile.colorBotones);
                 setValue('colorFondo', data.profile.colorFondo);
@@ -197,7 +216,7 @@ const NewVcard = () => {
                 <div className="header-menu">
                     <div className='btn-profile' onClick={SeeProfile}>
                         <div role={'button'}>
-                        <i className="fa-solid fa-qrcode"></i>
+                            <i className="fa-solid fa-qrcode"></i>
                         </div>
                     </div>
                 </div>
@@ -233,6 +252,14 @@ const NewVcard = () => {
                                 onDownloadClick={onDownloadClick}
                                 data={data}
                                 setMarco={(value) => setMarco(value)}
+                                setColor1b={(value) => setColor1b(value)}
+                                setColor2b={(value) => setColor2b(value)}
+                                setColor1m={(value) => setColor1m(value)}
+                                setColor1B={(value) => setColor1B(value)}
+                                setColor2B={(value) => setColor2B(value)}
+                                color1B={color1B}
+                                color2B={color2B}
+                                color1m={color1m}
                                 marco={marco}
                                 id={id} />
                         </StepWizard>
@@ -247,8 +274,8 @@ const NewVcard = () => {
                                     <div className='circle'></div>
                                     <div className='retangule'></div>
                                 </div>
-                                <div className='boxQR'>
-                                    <div ref={ref} className='QRDis' />
+                                <div className='boxQR' style={{ border: `5px solid ${color1m}`, background: color2B === '' ? color1B : `linear-gradient(${color1B},${color2B})` }}>
+                                    <div ref={ref} className='QRDis' style={{ background: color2b === '' ? color1b : `linear-gradient(${color1b},${color2b})` }} />
                                     <div className='QRText'>Escaneame!</div>
                                     <div className='circle'></div>
                                 </div>
@@ -614,18 +641,19 @@ const ButtonWizzar = props => {
     )
 };
 const FormTree = (props) => {
-    const [active2, setActive2] = useState(true);
-    const [active, setActive] = useState(true);
+    const [active2, setActive2] = useState(false);
+    const [active3, setActive3] = useState(false);
+    const [active, setActive] = useState(false);
     const [check, setCheck] = useState(false);
-    const [color1, setColor1] = useState('');
-    const [color2, setColor2] = useState('');
+    const [color1, setColor1] = useState('#1400EB');
+    const [color2, setColor2] = useState('#ED0012');
     const [margin, setMargin] = useState(props.data.imageOptions.margin);
     const [imagensize, setImagenzize] = useState(props.data.imageOptions.imageSize);
-    const [background, setBacground] = useState('');
-    const [color1b, setColor1b] = useState('');
-    const [color2b, setColor2b] = useState('');
-    const [color1z, setColor1z] = useState('');
-    const [color2z, setColor2z] = useState('');
+    const [background, setBacground] = useState(true);
+    const [color1b, setColor1b] = useState('#FFFFFF');
+    const [color2b, setColor2b] = useState('#FFFFFF');
+    const [color1z, setColor1z] = useState('#1400EB');
+    const [color2z, setColor2z] = useState('#ED0012');
     const [logo, setImagelogo] = useState('https://icons.iconarchive.com/icons/designbolts/free-multimedia/1024/Photo-icon.png');
     const [activeLink, setActiveLink] = useState(0);
     const [activeLinkEz, setActiveLinkEz] = useState(2);
@@ -715,6 +743,49 @@ const FormTree = (props) => {
                     )
                 })}
             </div>
+            <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
+                <div className="tooltip">
+                    <button type='button' className={'cuadro active'}>
+                        <div className='cuadre solid' /></button>
+                    <span className="tooltiptext" style={{ left: "-10px", top: "-25px" }}>Color Solido</span>
+                </div>
+                <h4 style={{ marginRight: "10px" }}>Tipo de Color</h4>
+                <div className="tooltip" onClick={() => document.getElementById('rgd5656').click()}>
+                    <button className={'cuadro'} >
+                        <div className='circle' style={{ background: props.color1m }} /></button>
+                    <span className="tooltiptext" style={{ left: "-10px", top: "-25px" }}>Color 1</span>
+                    <input type="color" className='circle' value={props.color1m} id='rgd5656' onChange={(e) => { props.setColor1m(e.target.value); }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                </div>
+                <h4>Color Borde</h4>
+            </div>
+            <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
+                <div className="tooltip" onClick={() => setActive3(true)}>
+                    <button type='button' className={!active3 ? 'cuadro' : 'cuadro active'}>
+                        <div className='cuadre solid' /></button>
+                    <span className="tooltiptext" style={{ left: "-10px", top: "-25px" }}>Color Solido</span>
+                </div>
+                <div className="tooltip" onClick={() => setActive3(false)}>
+                    <button type='button' className={active3 ? 'cuadro' : 'cuadro active'}>
+                        <div className='cuadre gradient' /></button>
+                    <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Color Gradient</span>
+                </div>
+                <h4 style={{ marginRight: "10px" }}>Tipo de Color</h4>
+                <div className="tooltip" onClick={() => document.getElementById('asdasdq78').click()}>
+                    <button className={'cuadro'}>
+                        <div className='circle' style={{ background: props.color1B }} /></button>
+                    <span className="tooltiptext" style={{ left: "-10px", top: "-25px" }}>Color 1</span>
+                    <input type="color" className='circle' value={props.color1B} id='asdasdq78' onChange={(e) => props.setColor1B(e.target.value)} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                </div>
+                {!active3 ? (
+                    <div className="tooltip" style={{ marginLeft: "10px" }} onClick={() => document.getElementById('asd789').click()}>
+                        <button type='button' className={'cuadro'}>
+                            <div className='circle' style={{ background: `linear-gradient(${props.color1B},${props.color2B})` }} /></button>
+                        <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Color 2</span>
+                        <input type="color" className='circle' value={props.color2B} id='asd789' onChange={(e) => props.setColor2B(e.target.value)} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                    </div>
+                ) : ''}
+                <h4>Color de Fondo</h4>
+            </div>
             <div className="header">
                 <h3 className="header-menu">Estilo de Puntos QR  ◻️</h3>
             </div>
@@ -742,14 +813,14 @@ const FormTree = (props) => {
                     <button className={'cuadro'} >
                         <div className='circle' style={{ background: color1 }} /></button>
                     <span className="tooltiptext" style={{ left: "-10px", top: "-25px" }}>Color 1</span>
-                    <input type="color" className='circle' id='color12' onChange={(e) => { setColor1(e.target.value); qrCode.update({ dotsOptions: { gradient: { colorStops: [{ offset: 1, color: color1 }, { offset: 1, color: color1 }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                    <input type="color" className='circle' value={color1} id='color12' onChange={(e) => { setColor1(e.target.value); qrCode.update({ dotsOptions: { gradient: { colorStops: [{ offset: 1, color: color1 }, { offset: 1, color: color1 }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
                 </div>
                 {!active2 ? (
                     <div className="tooltip" style={{ marginLeft: "10px" }} onClick={() => document.getElementById('buto1').click()}>
                         <button type='button' className={'cuadro'}>
                             <div className='circle' style={{ background: `linear-gradient(${color1},${color2})` }} /></button>
                         <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Color 2</span>
-                        <input type="color" className='circle' id='buto1' onChange={(e) => { setColor2(e.target.value); qrCode.update({ dotsOptions: { gradient: { colorStops: [{ offset: 0, color: color1 }, { offset: 1, color: color2 }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                        <input type="color" className='circle' value={color2} id='buto1' onChange={(e) => { setColor2(e.target.value); qrCode.update({ dotsOptions: { gradient: { colorStops: [{ offset: 0, color: color1 }, { offset: 1, color: color2 }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
                     </div>
                 ) : ''}
                 <h4>Color Borde</h4>
@@ -781,14 +852,14 @@ const FormTree = (props) => {
                     <button type='button' className={'cuadro'} >
                         <div className='circle' style={{ background: color1z }} /></button>
                     <span className="tooltiptext" style={{ left: "-10px", top: "-25px" }}>Color 1</span>
-                    <input type="color" className='circle' id='color14' onChange={(e) => { setColor1z(e.target.value); qrCode.update({ cornersSquareOptions: { gradient: { colorStops: [{ offset: 1, color: color1z }, { offset: 1, color: color1z }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                    <input type="color" className='circle' value={color1z} id='color14' onChange={(e) => { setColor1z(e.target.value); qrCode.update({ cornersSquareOptions: { gradient: { colorStops: [{ offset: 1, color: color1z }, { offset: 1, color: color1z }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
                 </div>
                 {!active ? (
                     <div className="tooltip" style={{ marginLeft: "10px" }} onClick={() => document.getElementById('buto19').click()}>
                         <button type='button' className={'cuadro'}>
                             <div className='circle' style={{ background: `linear-gradient(${color1z},${color2z})` }} /></button>
                         <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Color 2</span>
-                        <input type="color" className='circle' id='buto19' onChange={(e) => { setColor2z(e.target.value); qrCode.update({ cornersSquareOptions: { gradient: { colorStops: [{ offset: 0, color: color1z }, { offset: 1, color: color2z }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                        <input type="color" className='circle' value={color2z} id='buto19' onChange={(e) => { setColor2z(e.target.value); qrCode.update({ cornersSquareOptions: { gradient: { colorStops: [{ offset: 0, color: color1z }, { offset: 1, color: color2z }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
                     </div>
                 ) : ''}
                 <h4>Color Borde</h4>
@@ -797,7 +868,6 @@ const FormTree = (props) => {
                 <h3 className="header-menu">Fondo de QR  ◻️</h3>
             </div>
             <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px", display: "flex", justifyContent: "center" }}>
-                <input type="file" id='fondo1' style={{ display: "none" }} />
                 <div className="tooltip" onClick={() => setBacground(true)}>
                     <button type='button' className={!background ? 'cuadro' : 'cuadro active'}>
                         <div className='cuadre solid' /></button>
@@ -809,19 +879,18 @@ const FormTree = (props) => {
                     <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Color Gradient</span>
                 </div>
                 <h4 style={{ marginRight: "10px" }}>Tipo de Color</h4>
-                <input type="file" id='fondo1' style={{ display: "none" }} />
                 <div className="tooltip" onClick={() => document.getElementById('color146').click()}>
                     <button type='button' className={'cuadro'} >
                         <div className='circle' style={{ background: color1b }} /></button>
                     <span className="tooltiptext" style={{ left: "-10px", top: "-25px" }}>Color 1</span>
-                    <input type="color" className='circle' id='color146' onChange={(e) => { setColor1b(e.target.value); qrCode.update({ backgroundOptions: { gradient: { colorStops: [{ offset: 1, color: color1b }, { offset: 1, color: color1b }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                    <input type="color" className='circle' value={color1b} id='color146' onChange={(e) => { setColor1b(e.target.value); props.setColor1b(e.target.value); qrCode.update({ backgroundOptions: { gradient: { colorStops: [{ offset: 1, color: color1b }, { offset: 1, color: color1b }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
                 </div>
                 {!background ? (
                     <div className="tooltip" style={{ marginLeft: "10px" }} onClick={() => document.getElementById('buto196').click()}>
                         <button type='button' className={'cuadro'}>
                             <div className='circle' style={{ background: `linear-gradient(${color1b},${color2b})` }} /></button>
                         <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Color 2</span>
-                        <input type="color" className='circle' id='buto196' onChange={(e) => { setColor2b(e.target.value); qrCode.update({ backgroundOptions: { gradient: { colorStops: [{ offset: 0, color: color1b }, { offset: 1, color: color2b }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
+                        <input type="color" className='circle' value={color2b} id='buto196' onChange={(e) => { setColor2b(e.target.value); props.setColor2b(e.target.value); qrCode.update({ backgroundOptions: { gradient: { colorStops: [{ offset: 0, color: color1b }, { offset: 1, color: color2b }] } } }) }} style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} />
                     </div>
                 ) : ''}
                 <h4>Color Borde</h4>

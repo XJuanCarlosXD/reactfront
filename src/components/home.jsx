@@ -9,7 +9,7 @@ const Home = () => {
           <Link className="menu-link-main" href="#">Inicio 🏠</Link>
           <div className="header-menu">
             <Link className="main-header-link is-active" to="/Proyectos/new/Vcard">Crear ➕</Link>
-            <Link className="main-header-link" href="#">Planes 📚</Link>
+            <Link className="main-header-link" to={'/Planes'}>Planes 📚</Link>
             <Link className="main-header-link" href="#">Web</Link>
 
           </div>

@@ -1,11 +1,9 @@
 import React from 'react';
 import { NavLink, Route, Routes as Swicth } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
 
 const Sidebar = props => {
     return (
-        <AnimatePresence>
-            <div className="left-side">
+            <div className={`left-side`}>
                 <div className="side-wrapper">
                     <div className="side-title">Menu</div>
                     <div className="side-menu">
@@ -24,7 +22,6 @@ const Sidebar = props => {
                     </div>
                 </div>
             </div>
-        </AnimatePresence>
     );
 };
 
@@ -32,7 +29,7 @@ export default Sidebar;
 
 const SidebarProyecto = props => {
     return (
-        <motion.div initial={{ opacity: 0, transition: "all 0.7s ease-in" }} animate={{ opacity: 1, transition: "all 0.7s ease-in" }} exit={{ opacity: 0, transition: "all 0.7s ease-in" }}>
+        <div>
             <NavLink to="/Proyectos/Propios">
                 <svg viewBox="0 0 512 512">
                     <g xmlns="http://www.w3.org/2000/svg" fill="currentColor">
@@ -50,12 +47,12 @@ const SidebarProyecto = props => {
                 Proyectos Activos
                 <span className="notification-number updates">3</span>
             </NavLink>
-        </motion.div>
+        </div>
     );
 };
 const SidebarAnalisis = props => {
     return (
-        <motion.div initial={{ opacity: 0, transition: "all 0.7s ease-in" }} animate={{ opacity: 1, transition: "all 0.7s ease-in" }} exit={{ opacity: 0, transition: "all 0.7s ease-in" }}>
+        <div>
             <NavLink href="#">
                 <svg viewBox="0 0 488.455 488.455" fill="currentColor">
                     <path d="M287.396 216.317c23.845 23.845 23.845 62.505 0 86.35s-62.505 23.845-86.35 0-23.845-62.505 0-86.35 62.505-23.845 86.35 0" />
@@ -95,12 +92,12 @@ const SidebarAnalisis = props => {
                 </svg>
                 3D/AR
             </NavLink>
-        </motion.div>
+        </div>
     );
 };
 const SidebarCuenta = props => {
     return (
-        <motion.div initial={{ opacity: 0, transition: "all 0.7s ease-in" }} animate={{ opacity: 1, transition: "all 0.7s ease-in" }} exit={{ opacity: 0, transition: "all 0.7s ease-in" }}>
+        <div>
             <NavLink to="/Cuenta">
                 <i className="fa-solid fa-house-user"></i>
                 Cuenta
@@ -121,12 +118,12 @@ const SidebarCuenta = props => {
                 <i className="fa-solid fa-bell"></i>
                 Notificaciones
             </NavLink>
-        </motion.div>
+        </div>
     );
 };
 const SidebarConfiguracion = props => {
     return (
-        <motion.div initial={{ opacity: 0, transition: "all 0.7s ease-in" }} animate={{ opacity: 1, transition: "all 0.7s ease-in" }} exit={{ opacity: 0, transition: "all 0.7s ease-in" }}>
+        <div>
             <NavLink href="#">
                 <svg viewBox="0 0 512 512" fill="currentColor">
                     <path d="M467 0H45C20.186 0 0 20.186 0 45v422c0 24.814 20.186 45 45 45h422c24.814 0 45-20.186 45-45V45c0-24.814-20.186-45-45-45zM181 241c41.353 0 75 33.647 75 75s-33.647 75-75 75-75-33.647-75-75c0-8.291 6.709-15 15-15s15 6.709 15 15c0 24.814 20.186 45 45 45s45-20.186 45-45-20.186-45-45-45c-41.353 0-75-33.647-75-75s33.647-75 75-75 75 33.647 75 75c0 8.291-6.709 15-15 15s-15-6.709-15-15c0-24.814-20.186-45-45-45s-45 20.186-45 45 20.186 45 45 45zm180 120h30c8.291 0 15 6.709 15 15s-6.709 15-15 15h-30c-24.814 0-45-20.186-45-45V211h-15c-8.291 0-15-6.709-15-15s6.709-15 15-15h15v-45c0-8.291 6.709-15 15-15s15 6.709 15 15v45h45c8.291 0 15 6.709 15 15s-6.709 15-15 15h-45v135c0 8.276 6.724 15 15 15z" />
@@ -161,6 +158,6 @@ const SidebarConfiguracion = props => {
                 </svg>
                 Social Forum
             </NavLink>
-        </motion.div>
+        </div>
     );
 };
