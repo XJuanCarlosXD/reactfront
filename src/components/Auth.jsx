@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
 import StepWizard from "react-step-wizard";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, GithubAuthProvider, signInWithPopup, OAuthProvider, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 import { auth } from '../firebase/firebase';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -32,8 +32,10 @@ const Login = props => {
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user);
-                toast.success('Session iniciada correctamente!');
-            }).then(()=>{
+                toast('Seccion iniciada Bienvenido!', {
+                    icon: '🙋‍♂️',
+                });
+            }).then(() => {
                 navigate('/');
             })
             .catch((error) => {
@@ -43,9 +45,109 @@ const Login = props => {
                 toast(
                     `📛 ${errorMessage}`,
                     {
-                      duration: 6000,
+                        duration: 6000,
                     }
-                  );
+                );
+            });
+    };
+    const SingInGoogle = () => {
+        const provider = new GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                console.log(token);
+                const user = result.user;
+                console.log(user);
+                toast('Seccion iniciada Bienvenido!', {
+                    icon: '🙋‍♂️',
+                })
+            }).then(() => navigate('/'))
+            .catch((error) => {
+                console.log(error.code);
+                console.log(error.customData.email);
+                console.log(GoogleAuthProvider.credentialFromError(error));
+                toast(
+                    error.message,
+                    {
+                        duration: 6000,
+                    }
+                );
+            });
+    };
+    const SingInFacebook = () => {
+        const provider = new FacebookAuthProvider();
+        provider.addScope('user_birthday');
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = FacebookAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                console.log(accessToken);
+                const user = result.user;
+                console.log(user);
+                toast('Seccion iniciada Bienvenido!', {
+                    icon: '🙋‍♂️',
+                })
+            })
+            .catch((error) => {
+                console.log(error.code);
+                console.log(error.customData.email);
+                console.log(FacebookAuthProvider.credentialFromError(error));
+                toast(
+                    `❌ ${error.message}`,
+                    {
+                        duration: 6000,
+                    }
+                );
+            });
+    };
+    const SingInMicrosoft = () => {
+        const provider = new OAuthProvider('microsoft.com');
+        provider.addScope('mail.read');
+        provider.addScope('calendars.read');
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = OAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                const idToken = credential.idToken;
+                console.log(accessToken);
+                console.log(idToken);
+                toast('Seccion iniciada Bienvenido!', {
+                    icon: '🙋‍♂️',
+                })
+            })
+            .catch((error) => {
+                toast(
+                    `❌ ${error.message}`,
+                    {
+                        duration: 6000,
+                    }
+                );
+            });
+    };
+    const SingInGithub = () => {
+        const provider = new GithubAuthProvider();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GithubAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                const user = result.user;
+                console.log(token);
+                console.log(user);
+                toast('Seccion iniciada Bienvenido!', {
+                    icon: '🙋‍♂️',
+                })
+            }).catch((error) => {
+                console.log(error.code);
+                console.log(error.customData.email);
+                console.log(GithubAuthProvider.credentialFromError(error));
+                toast(
+                    `❌ ${error.message}`,
+                    {
+                        duration: 6000,
+                    }
+                );
             });
     };
     return (
@@ -73,10 +175,10 @@ const Login = props => {
                 </fieldset>
             </div>
             <div className='btns-login'>
-                <button type='button' className='google'><i className="fa-brands fa-google"></i> Google</button>
-                <button type='button' className='facebook'><i className="fa-brands fa-facebook"></i> Facebook</button>
-                <button type='button' className='microsoft'><i className="fa-brands fa-microsoft"></i> Microsoft</button>
-                <button type='button' className='github'><i className="fa-brands fa-github"></i> Github</button>
+                <button type='button' onClick={SingInGoogle} className='google'><i className="fa-brands fa-google"></i> Google</button>
+                <button type='button' onClick={SingInFacebook} className='facebook'><i className="fa-brands fa-facebook"></i> Facebook</button>
+                <button type='button' onClick={SingInMicrosoft} className='microsoft'><i className="fa-brands fa-microsoft"></i> Microsoft</button>
+                <button type='button' onClick={SingInGithub} className='github'><i className="fa-brands fa-github"></i> Github</button>
             </div>
         </div>
     )
@@ -90,7 +192,10 @@ const Register = props => {
                 const user = userCredential.user;
                 console.log(user);
                 reset({ name: '', email: '', password: '', confirm: '' });
-            }).then(()=>{
+                toast('Usuario creado Bienvenido a la familia VcardDO!', {
+                    icon: '🙋‍♂️',
+                });
+            }).then(() => {
                 navigate('/');
             })
             .catch((error) => {
@@ -100,9 +205,111 @@ const Register = props => {
                 toast(
                     `📛 ${errorMessage}`,
                     {
-                      duration: 6000,
+                        duration: 6000,
                     }
-                  );
+                );
+            });
+    };
+    const SingInGoogle = () => {
+        const provider = new GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                console.log(token);
+                const user = result.user;
+                console.log(user);
+                toast('usuario creado Bienvenido!', {
+                    icon: '🙋‍♂️',
+                })
+            }).then(() => navigate('/'))
+            .catch((error) => {
+                console.log(error.code);
+                console.log(error.customData.email);
+                console.log(GoogleAuthProvider.credentialFromError(error));
+                toast(
+                    error.message,
+                    {
+                        duration: 6000,
+                    }
+                );
+            });
+    };
+    const SingInFacebook = () => {
+        const provider = new FacebookAuthProvider();
+        provider.addScope('user_birthday');
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = FacebookAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                console.log(accessToken);
+                const user = result.user;
+                console.log(user);
+                toast('Seccion iniciada Bienvenido!', {
+                    icon: '🙋‍♂️',
+                })
+            })
+            .catch((error) => {
+                console.log(error.code);
+                console.log(error.customData.email);
+                console.log(FacebookAuthProvider.credentialFromError(error));
+                toast(
+                    error.message,
+                    {
+                        duration: 6000,
+                    }
+                );
+
+                // ...
+            });
+    };
+    const SingInMicrosoft = () => {
+        const provider = new OAuthProvider('microsoft.com');
+        provider.addScope('mail.read');
+        provider.addScope('calendars.read');
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = OAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                const idToken = credential.idToken;
+                console.log(accessToken);
+                console.log(idToken);
+                toast('Usuario creado Bienvenido!', {
+                    icon: '🙋‍♂️',
+                })
+            })
+            .catch((error) => {
+                toast(
+                    `❌ ${error.message}`,
+                    {
+                        duration: 6000,
+                    }
+                );
+            });
+    };
+    const SingInGithub = () => {
+        const provider = new GithubAuthProvider();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GithubAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                const user = result.user;
+                console.log(token);
+                console.log(user);
+                toast('Usuario creado Bienvenido!', {
+                    icon: '🙋‍♂️',
+                })
+            }).catch((error) => {
+                console.log(error.code);
+                console.log(error.customData.email);
+                console.log(GithubAuthProvider.credentialFromError(error));
+                toast(
+                    `❌ ${error.message}`,
+                    {
+                        duration: 6000,
+                    }
+                );
             });
     };
     return (
@@ -159,10 +366,10 @@ const Register = props => {
                 </fieldset>
             </div>
             <div className='btns-login'>
-                <button type='button' className='google'><i className="fa-brands fa-google"></i> Google</button>
-                <button type='button' className='facebook'><i className="fa-brands fa-facebook"></i> Facebook</button>
-                <button type='button' className='microsoft'><i className="fa-brands fa-microsoft"></i> Microsoft</button>
-                <button type='button' className='github'><i className="fa-brands fa-github"></i> Github</button>
+                <button type='button' onClick={SingInGoogle} className='google'><i className="fa-brands fa-google"></i> Google</button>
+                <button type='button' onClick={SingInFacebook} className='facebook'><i className="fa-brands fa-facebook"></i> Facebook</button>
+                <button type='button' onClick={SingInMicrosoft} className='microsoft'><i className="fa-brands fa-microsoft"></i> Microsoft</button>
+                <button type='button' onClick={SingInGithub} className='github'><i className="fa-brands fa-github"></i> Github</button>
             </div>
         </div>
     )

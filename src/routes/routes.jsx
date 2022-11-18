@@ -8,6 +8,7 @@ import NewVcard from '../components/newVcard';
 import { Password, Profile, Security } from '../components/profile';
 import Vcard from '../components/Vcard';
 import Auth from '../components/Auth';
+import Detalle from '../components/Detalle';
 
 const RouterReact = props => {
     const location = useLocation();
@@ -17,6 +18,7 @@ const RouterReact = props => {
                 <Route index element={<Home />} />
                 <Route path='/Login' element={<Auth />} />
                 <Route path='/Planes' element={<Planes />} />
+                <Route path='/Proyectos/Detalle/:id' element={<Detalle />} />
                 <Route path='/Analisis' element={<Home />} />
                 <Route path='/Proyectos' element={<Proyect />} />
                 <Route path='/Proyectos/Propios' element={<Proyect />} />
@@ -32,6 +34,7 @@ const RouterReact = props => {
             <Route path='/Vcard'>
                 <Route index element={<Vcard />} />
                 <Route path='/Vcard/QR/:id' element={<Vcard />} />
+                <Route path='/Vcard/QR/:id/#detalle' element={<Vcard />} />
                 <Route path='*' element={<Navigate replace to="/Proyectos" />} />
             </Route>
         </Routes>

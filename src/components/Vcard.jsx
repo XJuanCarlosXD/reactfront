@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import '../styles/style.css';
 import { useEffect } from 'react';
@@ -13,10 +13,73 @@ const Vcard = props => {
     const getData = async () => {
         const res = await getDoc(VcardDataColletion);
         setData(res.data());
+        var pathname = window.location.hash;
+        const movilL = res.data()?.stadistic?.movil.length - 1;
+        const webL = res.data()?.stadistic?.web.length - 1;
+        const mFecha = res.data()?.stadistic?.movil[movilL].fecha;
+        const wFecha = res.data()?.stadistic?.web[webL].fecha;
+        if (pathname === '') {
+            if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
+                if (mFecha === new Date().toLocaleDateString()) {
+                    await updateDoc(VcardDataColletion, {
+                        stadistic: {
+                            movil: [{
+                                fecha: new Date().toLocaleDateString(),
+                                escaneo: parseFloat(res.data()?.stadistic?.movil.map((x) => x.escaneo).reduce((prev, curr) => prev + curr)) + 1
+                            }],
+                            web: res.data().stadistic.web
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                    })
+
+                } else {
+                    await updateDoc(VcardDataColletion, {
+                        stadistic: {
+                            fecha: new Date().toLocaleDateString(),
+                            movil: [...res.data().stadistic.movil, {
+                                fecha: new Date().toLocaleDateString(),
+                                escaneo: 1
+                            }],
+                            web: res.data().stadistic.web
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                    })
+                }
+            } else {
+                if (wFecha === new Date().toLocaleDateString()) {
+                    await updateDoc(VcardDataColletion, {
+                        stadistic: {
+                            web: [{
+                                fecha: new Date().toLocaleDateString(),
+                                escaneo: parseFloat(res.data()?.stadistic?.web.map((x) => x.escaneo).reduce((prev, curr) => prev + curr)) + 1
+                            }],
+                            movil: res.data().stadistic.movil
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                    })
+                } else {
+                    const newValur = {
+                        fecha: new Date(new Date('Jul 12 2022')).toLocaleDateString(),
+                        escaneo: 1
+                    }
+                    await updateDoc(VcardDataColletion, {
+                        stadistic: {
+                            web: [...res.data().stadistic.web, newValur],
+                            movil: res.data().stadistic.movil
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                    })
+                }
+            }
+        }
     };
     useEffect(() => {
         getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <div className='vCardPresentacion'>

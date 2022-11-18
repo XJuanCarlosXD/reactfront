@@ -21,6 +21,7 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const perf = getPerformance(app);
 export const auth = getAuth(app);
+auth.useDeviceLanguage();
 
 // eslint-disable-next-line no-unused-vars
 const analytics = getAnalytics(app);

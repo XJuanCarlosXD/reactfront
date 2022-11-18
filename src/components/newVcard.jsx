@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useEffect, useState } from 'react';
 import StepWizard from "react-step-wizard";
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -9,6 +10,8 @@ import { ref as reference, uploadBytes, getDownloadURL } from "firebase/storage"
 import { storage } from '../firebase/firebase';
 import { db } from '../firebase/firebase';
 import { Loading } from './proyect';
+import { auth } from '../firebase/firebase';
+import { onAuthStateChanged } from "firebase/auth";
 
 const defaultState = [{ select: "Email", title: "", icon: "fa-solid fa-envelope" },
 { select: "Telefono Movil", title: "", icon: "fa-solid fa-mobile-screen" }, { select: "Ubicación", title: "", icon: "fa-solid fa-location-dot" }];
@@ -44,7 +47,7 @@ const defaulvalues = {
         radius: "50%",
     }
 };
-const NewVcard = () => {
+const NewVcard = props => {
     const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm(defaulvalues);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -74,8 +77,10 @@ const NewVcard = () => {
             const arraydata = {
                 nameProyect: data.proyectName,
                 active: true,
+                uid: watch('uid'),
                 createAt: new Date(),
                 updateAt: new Date(),
+                stadistic: { movil: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }], web: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }] },
                 marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
                 QRdata: { ...qrCode._options },
                 contact: [...rows],
@@ -106,9 +111,11 @@ const NewVcard = () => {
         console.log('actulizando...');
         try {
             const arraydata = {
+                uid: watch('uid'),
                 nameProyect: data.proyectName,
                 active: true,
                 updateAt: new Date(),
+                stadistic: { movil: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }], web: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }] },
                 marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
                 QRdata: { ...qrCode._options },
                 contact: [...rows],
@@ -196,6 +203,13 @@ const NewVcard = () => {
         }).then(() => setisActive(''))
             .catch(error => console.log(error))
     };
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setValue('uid', user.uid);
+            }
+        });
+    }, [])
     useEffect(() => {
         if (rows.length > 5) {
             setRows(rows.splice(1, 5))

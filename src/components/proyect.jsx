@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, getDocs, deleteDoc, addDoc, getDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, addDoc, getDoc, doc, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import html2canvas from 'html2canvas';
 import QRCodeStyling from 'qr-code-styling';
+import { auth } from '../firebase/firebase';
+import { onAuthStateChanged } from "firebase/auth";
 
 export const Proyect = props => {
     const [activeLink, setActiveLink] = useState('');
@@ -37,12 +39,18 @@ export const Proyect = props => {
         qrCode.update({ width: 100, height: 100 });
         qrCode.append(document.getElementById(index));
     }
-    const getData = async () => {
-        await getDocs(VcardDataColletion).then((res) => {
-            setData(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-        }).then(() => {
-            setisActive('');
-        })
+    const getData = () => {
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const uid = user.uid;
+                const q = query(VcardDataColletion, where("uid", "==", `${uid}`));
+                await getDocs(q).then((res) => {
+                    setData(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+                }).then(() => {
+                    setisActive('');
+                })
+            }
+        });
     };
     const dropdownActive = (index) => {
         if (dropdown) {
@@ -91,6 +99,17 @@ export const Proyect = props => {
                     </div>
                     <br />
                     <ul className='tableQR'>
+                        {data.length === 0 ? (
+                            <div style={{ marginLeft: '30px' }}>
+                                <h1>
+                                    ⚠️ No tienes ningun proyecto creado
+                                    <Link style={{ color: 'var(--theme-color)' }} className="effect1 main-header-link" to="/Proyectos/new/Vcard">
+                                        Crear uno Aqui!
+                                        <span className="bg"></span>
+                                    </Link>
+                                </h1>
+                            </div>
+                        ) : ''}
                         {data.map((row, index) => {
                             QRContainer(row, `QRlist-${index + 1}`);
                             setTimeout(() => {
@@ -99,10 +118,13 @@ export const Proyect = props => {
                             setTimeout(() => {
                                 QRContainer(row, `QRModal-${index + 1}`);
                             }, 0);
+                            const movil = parseFloat(row.stadistic?.movil?.map((x) => x.escaneo).reduce((prev, curr) => prev + curr));
+                            const web = parseFloat(row.stadistic?.web?.map((x) => x.escaneo).reduce((prev, curr) => prev + curr));
+                            const escaneo = movil + web;
                             return (
                                 <li className="adobe-product" key={index}>
                                     <div className="Previews">
-                                        <Link to={`/Vcard/QR/${row.id}`}>
+                                        <Link to={`/Vcard/QR/${row.id}/#detalle`}>
                                             <div className="QRlist" id={`QRlist-${index + 1}`} />
                                         </Link>
                                     </div>
@@ -113,19 +135,19 @@ export const Proyect = props => {
                                             <div className='text-date'>Creado: {new Date(row.createAt.seconds).toLocaleString()}</div>
                                         </div>
                                         <div className="second">
-                                            <span>https://qrfy.com/my-qr-codes</span>
+                                            <span>/QR/{row.id}</span>
                                             <span className="status"><i className={`status-circle ${row.active ? 'green' : 'red'}`}></i>
                                                 {row.active ? 'Activo' : 'Desactivado'}</span>
                                             <div className='text-update'>Modificado: {new Date(row.updateAt.seconds).toLocaleString()}</div>
                                         </div>
                                         <div className="three">
-                                            <h3>2</h3>
+                                            <h3>{escaneo}</h3>
                                             <h4>Escaneado</h4>
                                         </div>
                                     </div>
                                     <div className="button-wrapper">
                                         <div className="btn-container detalle">
-                                            <Link to={`/Vcard/QR/${row.id}`}>
+                                            <Link to={`/Proyectos/Detalle/${row.id}/`}>
                                                 <button type='button'>
                                                     <span className="text">Detalle</span>
                                                     <div className="icon-container">
@@ -151,6 +173,7 @@ export const Proyect = props => {
                                                     <ul>
                                                         <li onClick={() => CloneProyect(row.id)}><Link href="#"><i className="fa-solid fa-clone"></i> Duplicar</Link></li>
                                                         <li onClick={() => document.getElementById(`li${index}`).click()}><Link id={`li${index}`} to={`/Proyectos/new/Vcard/${row.id}`}><i className="fa-solid fa-pen-to-square"></i> Editar</Link></li>
+                                                        <li className='DEtaile' onClick={() => document.getElementById(`de${index}`).click()}><Link id={`de${index}`} to={`/Proyectos/Detalle/${row.id}/`}><i className="fa-solid fa-circle-info"></i> Detalle</Link></li>
                                                         <li onClick={() => setModal(index)}><Link href="#"><i className="fa-solid fa-trash-can"></i> Borrar</Link></li>
                                                         <li><Link href="#"><i className="fa-solid fa-xmark"></i> Cancel</Link></li>
                                                     </ul>
@@ -243,7 +266,7 @@ const QRdonwload = (props) => {
                                 <div className='retangule'></div>
                             </div>
                             <div className='boxQR' style={{ border: `5px solid ${props.marco?.color1m}`, background: props.marco?.color2B === '' ? props.marco?.color1B : `linear-gradient(${props.marco?.color1B},${props.marco?.color2B})` }}>
-                                <div className='QRDis' id={`QRModal-${props.index + 1}`} style={{ background: props.marco?.color2b === '' ? props.marco?.color1b : `linear-gradient(${props.marco?.color1b},${props.marco?.color2b})` }}  />
+                                <div className='QRDis' id={`QRModal-${props.index + 1}`} style={{ background: props.marco?.color2b === '' ? props.marco?.color1b : `linear-gradient(${props.marco?.color1b},${props.marco?.color2b})` }} />
                                 <div className='QRText'>Escaneame!</div>
                                 <div className='circle'></div>
                             </div>

@@ -1,28 +1,45 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import Sidebar from '../layouts/sidebar';
 import { toast } from 'react-hot-toast';
 import { signOut } from "firebase/auth";
 import { auth } from '../firebase/firebase';
+import { onAuthStateChanged } from "firebase/auth";
 
 const Navbar = props => {
     const Theme = () => {
         document.body.classList.toggle('light-mode');
     }
     const [active, setActive] = React.useState(false);
+    const [name, setName] = React.useState(null);
+    const [photoURL, setPhoto] = React.useState("https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80");
     const navigate = useNavigate();
     const logout = () => {
         signOut(auth).then(() => {
-            toast('Session cerrada buen viaje!', {
+            toast('Seccion cerrada buen viaje!', {
                 icon: '🙋‍♂️',
             });
-        }).then(()=>{
+        }).then(() => {
             navigate('/');
         })
-        .catch((error) => {
-            toast.error(error);
-        });
+            .catch((error) => {
+                toast.error(error);
+            });
     }
+    React.useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setName(user.displayName);
+                setPhoto(user.photoURL);
+                // const email = user.email;
+                // const uid = user.uid;
+                // const emailVerified = user.emailVerified;
+            } else {
+                navigate('/Login');
+            }
+        });
+    }, [])
     return (
         <>
             <div className="dark-light" onClick={Theme}>
@@ -61,8 +78,8 @@ const Navbar = props => {
                         </div>
                         <i className="fa-solid fa-person-walking-arrow-right" onClick={logout}></i>
                         <div className="profile-img">
-                            <img src="https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="" />
-                            Juan Carlos Abreu
+                            <img src={photoURL} alt="" />
+                            {name}
                         </div>
                     </div>
                 </nav>
