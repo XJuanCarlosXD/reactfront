@@ -789,7 +789,7 @@ body.light-mode .video-bg:before {
 .dropdown ul {
   position: absolute;
   background: var(--dropdown-bg);
-  height: 140px;
+  height: 170px;
   width: 120px;
   right: 0;
   top: 20px;
@@ -798,11 +798,6 @@ body.light-mode .video-bg:before {
   opacity: 0;
   transform: translatey(10px);
   transition: all 0.4s ease;
-}
-@media screen and (max-width: 480px) {
-  .dropdown ul {
-    height: 170px;
-  }
 }
 .dropdown ul a {
   text-decoration: none;

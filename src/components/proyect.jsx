@@ -173,7 +173,7 @@ export const Proyect = props => {
                                                     <ul>
                                                         <li onClick={() => CloneProyect(row.id)}><Link href="#"><i className="fa-solid fa-clone"></i> Duplicar</Link></li>
                                                         <li onClick={() => document.getElementById(`li${index}`).click()}><Link id={`li${index}`} to={`/Proyectos/new/Vcard/${row.id}`}><i className="fa-solid fa-pen-to-square"></i> Editar</Link></li>
-                                                        <li className='DEtaile' onClick={() => document.getElementById(`de${index}`).click()}><Link id={`de${index}`} to={`/Proyectos/Detalle/${row.id}/`}><i className="fa-solid fa-circle-info"></i> Detalle</Link></li>
+                                                        <li onClick={() => document.getElementById(`de${index}`).click()}><Link id={`de${index}`} to={`/Proyectos/Detalle/${row.id}/`}><i className="fa-solid fa-circle-info"></i> Detalle</Link></li>
                                                         <li onClick={() => setModal(index)}><Link href="#"><i className="fa-solid fa-trash-can"></i> Borrar</Link></li>
                                                         <li><Link href="#"><i className="fa-solid fa-xmark"></i> Cancel</Link></li>
                                                     </ul>
