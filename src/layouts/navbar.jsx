@@ -1,12 +1,28 @@
 import React from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import Sidebar from '../layouts/sidebar';
+import { toast } from 'react-hot-toast';
+import { signOut } from "firebase/auth";
+import { auth } from '../firebase/firebase';
 
 const Navbar = props => {
     const Theme = () => {
         document.body.classList.toggle('light-mode');
     }
     const [active, setActive] = React.useState(false);
+    const navigate = useNavigate();
+    const logout = () => {
+        signOut(auth).then(() => {
+            toast('Session cerrada buen viaje!', {
+                icon: '🙋‍♂️',
+            });
+        }).then(()=>{
+            navigate('/');
+        })
+        .catch((error) => {
+            toast.error(error);
+        });
+    }
     return (
         <>
             <div className="dark-light" onClick={Theme}>
@@ -43,7 +59,7 @@ const Navbar = props => {
                                 <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
                             </svg>
                         </div>
-                        <i className="fa-solid fa-person-walking-arrow-right"></i>
+                        <i className="fa-solid fa-person-walking-arrow-right" onClick={logout}></i>
                         <div className="profile-img">
                             <img src="https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="" />
                             Juan Carlos Abreu

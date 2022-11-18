@@ -404,7 +404,6 @@ body.light-mode .video-bg:before {
   max-width: 600px;
   margin: auto;
   transition: 0.4s;
-  box-shadow: 0 0 0 1px var(--border-color);
   padding-left: 0;
 }
 .wide .menu-circle {
@@ -3642,6 +3641,78 @@ tfoot {
 
 .icon {
   font-size: 30px;
+}
+
+fieldset.mt-3 {
+  margin-top: 10vh;
+}
+
+.login div.btn-login {
+  position: relative;
+  top: 3vh;
+}
+.login .Form-Control input {
+  width: 100%;
+  position: relative;
+  top: 2vh;
+  left: -2vh;
+}
+
+.btns-login {
+  display: flex;
+  margin: 10px;
+  position: relative;
+  left: 12px;
+  font-size: 10px;
+}
+.btns-login button {
+  margin: 5px;
+  width: 10vh;
+  height: 8vh;
+  border-radius: 6px;
+  border: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+.btns-login button:hover{
+  border: 1px solid #fff;
+}
+
+.header-profile i {
+  cursor: pointer;
+}
+.reLink{
+  display: flex;
+  justify-content: center;
+}
+.reLink a {
+  position: relative;
+  color: var(--theme-color);
+  font-size: 14px;
+  top: 6vh;
+}
+.btns-login button.google {
+  background: #DB4437;
+}
+.btns-login button.facebook {
+  background: #4267B2;
+}
+.btns-login button.microsoft {
+  background: #FFB900;
+}
+.btns-login button.github {
+  background: black;
+}
+.btns-login i {
+  font-size: 20px;
+}
+
+.error-message{
+  color: #ecd123;
+  position: relative;
+  top: 10px;
+  left: 4.5vh;
+  font-size: 11px;
 }
 
 .iphone {
