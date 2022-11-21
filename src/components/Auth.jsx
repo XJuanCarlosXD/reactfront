@@ -9,8 +9,10 @@ import { useNavigate } from 'react-router-dom';
 const Auth = props => {
     React.useEffect(() => {
         document.querySelector('.left-side').style.display = 'none';
+        document.querySelector('.sidenav').style.display = 'none';
+        document.querySelector('.rekpa').classList.remove('app');
         document.querySelector('.rjii').classList.add('wide');
-    })
+    }, [])
     return (
         <div className="main-container">
             <div className={`content-wrapper`}>
@@ -151,7 +153,7 @@ const Login = props => {
             });
     };
     return (
-        <div className="iphone">
+        <div className="iphone login">
             <div className='form-login'>
                 <header className="header">
                     <h2 className="header-menu">Iniciar Sesión</h2>
@@ -313,7 +315,7 @@ const Register = props => {
             });
     };
     return (
-        <div className="iphone">
+        <div className="iphone login">
             <div className='form-register'>
                 <header className="header">
                     <h2 className="header-menu">Registrase</h2>

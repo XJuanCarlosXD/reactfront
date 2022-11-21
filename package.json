@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.37.0",
     "react-hot-toast": "^2.4.0",
+    "react-material-music-player": "^1.1.9",
     "react-qr-code": "^2.0.8",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
