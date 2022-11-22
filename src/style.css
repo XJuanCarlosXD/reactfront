@@ -221,7 +221,7 @@ body.light-mode .video-bg:before {
   list-style: none;
 }
 .items ul li {
-  background: rgba(255, 255, 255, 0.333);
+  background: var(--content-title-color);
   margin: 10px 0;
   height: 40px;
   transition: 0.5s ease-in;
@@ -242,12 +242,15 @@ body.light-mode .video-bg:before {
   padding: 0 10px;
   letter-spacing: 1px;
 }
-@media screen and (max-width: 610px) {
+@media screen and (max-width: 1055px) {
   .header-menu a:not(.main-header-link) {
     display: none;
   }
-  .sidenav {
-    display: block;
+  .sidenav{
+    left: -25vh;
+  }
+  .items ul li {
+    width: calc(200% - 70%);
   }
 }
 .header-menu a.active,
@@ -272,6 +275,9 @@ body.light-mode .video-bg:before {
 @media screen and (max-width: 1055px) {
   .notify {
     display: none;
+  }
+  .sidenav {
+    display: block;
   }
 }
 
@@ -342,7 +348,7 @@ body.light-mode .video-bg:before {
   flex-shrink: 0;
 }
 @media screen and (max-width: 945px) {
-  .header-profile{
+  .header-profile {
     margin-left: 30px;
   }
 }
@@ -435,7 +441,7 @@ body.light-mode .video-bg:before {
   overflow: auto;
   flex-shrink: 0;
 }
-@media screen and (max-width: 945px) {
+@media screen and (max-width: 1055px) {
   .left-side {
     display: none;
   }
@@ -518,7 +524,7 @@ body.light-mode .video-bg:before {
   color: var(--theme-color);
   padding: 0 30px;
 }
-@media screen and (max-width: 1055px) {
+@media screen and (max-width: 950px) {
   .menu-link-main {
     display: none;
   }
@@ -534,7 +540,7 @@ body.light-mode .video-bg:before {
   overflow: auto;
   background-color: var(--theme-bg-color);
 }
-@media screen and (max-width: 510px) {
+@media screen and (max-width: 950px) {
   .content-wrapper {
     padding: 20px;
   }
@@ -563,7 +569,7 @@ body.light-mode .video-bg:before {
   border-radius: 14px;
   padding: 20px 40px;
 }
-@media screen and (max-width: 415px) {
+@media screen and (max-width: 950px) {
   .content-wrapper-header {
     padding: 20px;
   }
@@ -641,7 +647,7 @@ body.light-mode .video-bg:before {
   -o-object-position: center;
   object-position: center;
 }
-@media screen and (max-width: 570px) {
+@media screen and (max-width: 950px) {
   .content-wrapper-img {
     width: 110px;
   }
@@ -704,7 +710,7 @@ body.light-mode .video-bg:before {
   align-items: center;
   width: 150px;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width:950px) {
   .products {
     width: 120px;
   }
@@ -716,7 +722,7 @@ body.light-mode .video-bg:before {
   font-size: 15px;
   position: relative;
 }
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 950px) {
   .status {
     display: none;
   }
@@ -741,7 +747,7 @@ body.light-mode .video-bg:before {
   margin-top: 0;
   padding: 6px 24px;
 }
-@media screen and (max-width: 390px) {
+@media screen and (max-width: 950px) {
   .status-button {
     padding: 6px 14px;
   }
@@ -830,7 +836,7 @@ body.light-mode .video-bg:before {
   width: 187px;
   margin-left: auto;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 950px) {
   .button-wrapper {
     width: auto;
   }
@@ -856,7 +862,7 @@ body.light-mode .video-bg:before {
   white-space: normal;
   transition: all 0.3s ease-in;
 }
-@media screen and (max-width: 570px) {
+@media screen and (max-width: 950px) {
   .pop-up {
     width: 100%;
   }
@@ -988,7 +994,7 @@ body.light-mode .video-bg:before {
   margin-left: auto;
   margin-top: 16px;
 }
-@media screen and (max-width: 1110px) {
+@media screen and (max-width: 950px) {
   .app-card {
     width: calc(50% - 20px);
   }
@@ -997,7 +1003,7 @@ body.light-mode .video-bg:before {
     margin-left: 0px;
   }
 }
-@media screen and (max-width: 565px) {
+@media screen and (max-width: 950) {
   .app-card {
     width: calc(100% - 20px);
     margin-top: 20px;
@@ -1137,7 +1143,7 @@ body.light-mode .video-bg:before {
   font-size: 16px;
   margin-top: -60px;
 }
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 950px) {
   .form .right {
     display: none;
   }
@@ -1187,8 +1193,27 @@ body.light-mode .video-bg:before {
   margin-left: auto;
   margin-top: 16px;
 }
-
-@media screen and (max-width: 565px) {
+@media screen and (max-width: 1055px) {
+  .form .second {
+    height: 20px;
+    width: 100%;
+    font-size: 16px;
+    left: 50px;
+    top: -8px;
+    transition: all 1s ease-in-out;
+  }
+  .form .firt h3 {
+    font-size: 14px;
+  }
+  .form .text-date {
+    top: 5px;
+  }
+  .form .three h3,
+  .form::before {
+    font-size: 10vh;
+  }
+}
+@media screen and (max-width: 950px) {
   .form .firt {
     width: 60px;
     font-size: 8px;
@@ -1226,7 +1251,12 @@ body.light-mode .video-bg:before {
   height: 50px;
   width: 100%;
 }
-
+@media screen and (max-width: 1055px) {
+  .button-Vcar{
+    position: relative;
+    left: 100%;
+  }
+}
 .effect1 {
   color: var(--theme-color);
   text-decoration: none;
@@ -2714,7 +2744,7 @@ input[type="checkbox"] {
     content: "Cargando...";
   }
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 950px) {
   .LoadingCard::before {
     font-size: 20vh;
     left: 0vh;
@@ -2921,7 +2951,7 @@ input[type="checkbox"] {
 .boxQR-conten .QRDis canvas {
   border-radius: 0;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 950px) {
   .boxQR-conten {
     position: absolute;
     height: max-content;
@@ -2987,7 +3017,7 @@ input[type="checkbox"] {
   -webkit-animation: logo 5s linear infinite alternate;
   animation: logo 5s linear infinite alternate;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 950px) {
   .img-content {
     font-size: 5vh;
   }
@@ -3074,7 +3104,7 @@ input[type="checkbox"] {
 .btn-container a {
   text-decoration: none;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 950px) {
   .btn-container.detalle {
     display: none;
   }
@@ -3104,6 +3134,76 @@ input[type="checkbox"] {
   visibility: hidden;
 }
 /** Styles de Celular */
+@media screen and (max-width: 1055px) {
+  .caja .caja {
+    max-width: 30%;
+    transition: all 0.7s ease-in;
+  }
+  input[type="checkbox"] {
+    visibility: hidden;
+  }
+  .header .header-menu{
+    font-size: 15px;
+  }
+  .caja .caja-button button {
+    width: 40px;
+    height: 50px;
+  }
+  .caja .caja-button button span {
+    align-items: center;
+    top: 1.4vh;
+    font-size: 25px;
+  }
+  .caja .caja-button button p {
+    top: 2.5vh;
+    right: 1px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+  .content-wrapper.rj45 {
+    position: relative !important;
+    overflow-y: scroll;
+    margin: 0;
+  }
+  .content-form.rght6 {
+    margin-right: 0;
+    margin-left: -10px;
+    position: absolute;
+    width: calc(100% - 5%);
+  }
+  .col {
+    left: 10px;
+    margin: 6px;
+    width: calc(80px - 40px);
+    height: calc(80px - 40px);
+  }
+  .col .box:before {
+    font-size: 25px;
+  }
+  .col .box:after {
+    font-size: 20px;
+  }
+  .Form-vcard {
+    width: 100%;
+    position: relative;
+  }
+  .content-form.social {
+    position: relative;
+  }
+  .content-form.social .Form-Control input {
+    width: 100%;
+  }
+  .content-form.social .icon-social .col .box:after {
+    font-size: 20px;
+  }
+  .content-form.social .icon-social .col {
+    top: 6vh;
+  }
+  .Form-Control.SOCIAL {
+    display: block;
+    margin-bottom: 11vh;
+  }
+}
 @media screen and (max-width: 950px) {
   .caja .caja,
   .caja.QRRR {
@@ -3821,7 +3921,7 @@ fieldset.mt-3 {
 .QRDetaill canvas:nth-child(1) {
   display: block;
 }
-.iphone.login .Form-Control input{
+.iphone.login .Form-Control input {
   background: var(--theme-bg-color);
 }
 @media screen and (max-width: 950px) {

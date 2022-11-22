@@ -30,7 +30,7 @@ const Detalle = props => {
         document.querySelector('.left-side').style.display = 'none';
     })
     const options = {
-        responsive: true,
+        responsive: false,
         plugins: {
             legend: {
                 position: 'top',
