@@ -246,9 +246,6 @@ body.light-mode .video-bg:before {
   .header-menu a:not(.main-header-link) {
     display: none;
   }
-  .sidenav{
-    left: -25vh;
-  }
   .items ul li {
     width: calc(200% - 70%);
   }
