@@ -78,7 +78,7 @@ const Navbar = props => {
                         </div>
                         <i className="fa-solid fa-person-walking-arrow-right" onClick={logout}></i>
                         <div className="profile-img">
-                            <img src={photoURL} alt="" />
+                            <img src={photoURL} style={{ display: photoURL === null ? 'none' : '' }} alt="" />
                             {name}
                         </div>
                     </div>

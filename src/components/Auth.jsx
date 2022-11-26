@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
 import StepWizard from "react-step-wizard";
-import { createUserWithEmailAndPassword, GithubAuthProvider, signInWithPopup, OAuthProvider, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, GithubAuthProvider, signInWithPopup, OAuthProvider, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 import { auth } from '../firebase/firebase';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -191,9 +191,11 @@ const Register = props => {
     const onSubmit = async (data) => {
         await createUserWithEmailAndPassword(auth, data.email, data.password)
             .then((userCredential) => {
-                const user = userCredential.user;
-                console.log(user);
-                reset({ name: '', email: '', password: '', confirm: '' });
+                updateProfile(auth.currentUser, {
+                    displayName: data.name,
+                }).then(() => {
+                    reset({ name: '', email: '', password: '', confirm: '' });
+                })
                 toast('Usuario creado Bienvenido a la familia VcardDO!', {
                     icon: '🙋‍♂️',
                 });

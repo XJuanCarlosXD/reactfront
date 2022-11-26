@@ -9,6 +9,7 @@ import { Password, Profile, Security } from '../components/profile';
 import Vcard from '../components/Vcard';
 import Auth from '../components/Auth';
 import Detalle from '../components/Detalle';
+import ReAuth from '../components/Re-Auth';
 
 const RouterReact = props => {
     const location = useLocation();
@@ -17,6 +18,7 @@ const RouterReact = props => {
             <Route path='/' element={<Navbar />}>
                 <Route index element={<Home />} />
                 <Route path='/Login' element={<Auth />} />
+                <Route path='/Re-Autenticated' element={<ReAuth />} />
                 <Route path='/Planes' element={<Planes />} />
                 <Route path='/Proyectos/Detalle/:id' element={<Detalle />} />
                 <Route path='/Analisis' element={<Home />} />

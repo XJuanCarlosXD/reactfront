@@ -115,7 +115,6 @@ const NewVcard = props => {
                 nameProyect: data.proyectName,
                 active: true,
                 updateAt: new Date(),
-                stadistic: { movil: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }], web: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }] },
                 marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
                 QRdata: { ...qrCode._options },
                 contact: [...rows],
@@ -176,6 +175,7 @@ const NewVcard = props => {
         await getDoc(doc(db, "VcardData", id)).then(res => {
             if (res.exists()) {
                 const data = res.data();
+                const adreess = res.data().contact.find(e => e.select === "Ubicación").adreess
                 qrCode = new QRCodeStyling(data.QRdata);
                 setDataa(data.QRdata);
                 setDataprofile(data.profile);
@@ -188,6 +188,12 @@ const NewVcard = props => {
                 setColor1b(data.marcoQR.color1b);
                 setColor2b(data.marcoQR.color2b);
                 setColor1m(data.marcoQR.color1m);
+                setValue('direccion', adreess.direccion);
+                setValue('numeracion', adreess.numeracion);
+                setValue('codigo', adreess.codigo);
+                setValue('ciudad', adreess.ciudad);
+                setValue('estado', adreess.estado);
+                setValue('pais', adreess.pais);
                 setValue('fondoActive', data.profile.fondoActive);
                 setValue('colorBotones', data.profile.colorBotones);
                 setValue('colorFondo', data.profile.colorFondo);
@@ -320,9 +326,15 @@ const FormThoRow = (props) => {
     useEffect(() => {
         setSelect(props.select);
     }, [props.select])
-    const onChangeInput = () => {
-        props.onChange("title", `${props.watch('direccion')} ${props.watch('numeracion')}, ${props.watch('codigo')}, ${props.watch('ciudad')}, ${props.watch('estado')}, ${props.watch('pais')}`)
-    }
+    const onChangeInput = () => props.onChange("title", `${props.watch('direccion')} ${props.watch('numeracion')}, ${props.watch('codigo')}, ${props.watch('ciudad')}, ${props.watch('estado')}, ${props.watch('pais')}`)
+    const onBlurFuntion = () => props.onChange("adreess", {
+        direccion: props.watch('direccion'),
+        numeracion: props.watch('numeracion'),
+        codigo: props.watch('codigo'),
+        ciudad: props.watch('ciudad'),
+        estado: props.watch('estado'),
+        pais: props.watch('pais')
+    })
     const onSelect = (e) => {
         if (e.target.value === 'Email') {
             setDetalle('📧 Escribe un correo electronico');
@@ -366,7 +378,7 @@ const FormThoRow = (props) => {
                 <button type='button' onClick={props.onRemove}><i className="fa-solid fa-minus"></i></button>
             </div>
             {select === 'Ubicación' ? (
-                <div className='location' onChange={onChangeInput}>
+                <div className='location' onChange={onChangeInput} onBlur={onBlurFuntion}>
                     <div className="Form-Control">
                         <input type="text" className={props.errors.direccion && 'error'} placeholder='Dirección' {...props.register('direccion', { required: true })} />
                         <input type="text" className={props.errors.numeracion && 'error'} placeholder='Numeración' {...props.register('numeracion', { required: true })} />
@@ -410,7 +422,7 @@ const FormTwo = props => {
         copyRows.splice(index, 1);
         setRows(copyRows);
         props.setRSocial(copyRows);
-    }
+    };
     const handleOnChange = (index, name, value) => {
         const copyRows = [...rows];
         copyRows[index] = {
@@ -429,21 +441,23 @@ const FormTwo = props => {
                     <span className="tooltiptext" style={{ left: "-30px", top: "-25px" }}>Agregar</span>
                 </div>
             </div>
-            {props.rows.map((row, index) => (
-                <>
-                    <FormThoRow
-                        {...row}
-                        select={row.select}
-                        input={row.title}
-                        register={props.register}
-                        watch={props.watch}
-                        errors={props.errors}
-                        onChange={(name, value) => props.handleOnChange(index, name, value)}
-                        onRemove={() => props.handleOnRemove(index)}
-                        key={index}
-                    />
-                </>
-            ))}
+            {props.rows.map((row, index) => {
+                return (
+                    <>
+                        <FormThoRow
+                            {...row}
+                            select={row.select}
+                            input={row.title}
+                            register={props.register}
+                            watch={props.watch}
+                            errors={props.errors}
+                            onChange={(name, value) => props.handleOnChange(index, name, value)}
+                            onRemove={() => props.handleOnRemove(index)}
+                            key={index}
+                        />
+                    </>
+                )
+            })}
             <div className="header">
                 <h3 className="header-menu">Redes Sociales 🌐</h3>
             </div>
@@ -492,11 +506,11 @@ const PreviewsVcard = props => {
                 <p>{props.watch('position')}</p>
             </div>
             <div className='caja-button'>
-                <a href={array.find(e => e.select === "Telefono Movil") !== undefined ? `tel:${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-phone"></span><p style={{ left: " -3px" }}>Llamar</p></button></a>
-                <a href={array.find(e => e.select === "Email") !== undefined ? `mailto:${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-envelope"></span><p style={{ left: " -0.1px" }}>Email</p></button></a>
+                <a href={array.find(e => e.select === "Telefono Movil") !== undefined ? `tel: ${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-phone"></span><p style={{ left: " -3px" }}>Llamar</p></button></a>
+                <a href={array.find(e => e.select === "Email") !== undefined ? `mailto: ${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-envelope"></span><p style={{ left: " -0.1px" }}>Email</p></button></a>
                 <a href={array.find(e => e.select === "Pagina Web") !== undefined ? `${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-globe"></span><p>Web</p></button></a>
                 <a href={`https://www.google.com/maps/place/${array?.find(e => e.select === "Ubicación")?.title}`} target="_blank" rel="noopener noreferrer"><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className='fa-solid fa-location-dot'></span><p style={{ left: "-13px" }}>Ubicacion</p></button></a>
-            </div>
+            </div >
             <div className='caja-info'>
                 <div className="header">
                     <h3 className="header-menu">Informacion Contacto 📞</h3>
@@ -519,7 +533,7 @@ const PreviewsVcard = props => {
                     </div>
                 ))}
             </div>
-        </div>
+        </div >
     )
 };
 const FormVcard = props => {

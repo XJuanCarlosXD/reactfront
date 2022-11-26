@@ -2324,31 +2324,82 @@ button:hover .icon-container i {
 }
 
 .Form-vcard.profile {
-  max-width: 30%;
-  margin-right: 10px;
-  max-height: 400px;
-  overflow: auto;
+  max-width: 100%;
+  flex-direction: column;
 }
 .Form-vcard.profile .caja-backAvatar {
-  top: 20px;
-  width: 110px;
-  height: 110px;
+  top: 2vh;
+  left: 6vh;
+  float: left;
+  width: 160px;
+  border-radius: 50%;
+  height: 160px;
+}
+.profile .caja-backAvatar img{
+  width: 145px;
+  border-radius: 50%;
+  height: 145px;
 }
 .Form-vcard.profile h2 {
-  margin-top: 40px;
-  text-align: center;
+  position: relative;
+  width: 60%;
+  left: 10vh;
+  top: 3vh;
+  text-align: left;
 }
 .Form-vcard.profile h4 {
-  text-align: center;
+  text-align: left;
+  width: 60%;
+  position: relative;
+  top: 1vh;
+  left: 10.5vh;
 }
 .Form-vcard div.vcard-create h2 {
+  position: relative;
+  top: 4vh;
+  left: 20vh;
+  text-align: left;
   margin: 0;
   font-size: 40px;
 }
 .Form-vcard div.vcard-create h4 {
+  position: relative;
+  left: 10.5vh;
+  top: -7vh;
   margin: 0;
   margin-bottom: 20px;
   font-size: 16px;
+}
+@media screen and (max-width: 950px){
+  .Form-vcard.profile {
+    display: block;
+    overflow: hidden;
+  }
+  .Form-vcard.profile .caja-backAvatar {
+    top: 2vh;
+    left: 10vh;
+    float: left;
+  }
+  .contacss{
+    margin-bottom: 8vh;
+  }
+  .Form-vcard.password{
+    margin-bottom: 55px;
+  }
+  .Form-vcard.profile h2 {
+    display: inline-block;
+    width: 94%;
+    left: 2.5vh;
+    font-size: 20px;
+  }
+  .Form-vcard.profile h4 {
+    display: inline-block;
+    text-align: left;
+    width: 80%;
+    position: relative;
+    top: 0;
+    left: 5vh;
+  }
 }
 /** QR caja */
 .boxQR-conten {
