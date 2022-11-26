@@ -12,6 +12,7 @@ import { db } from '../firebase/firebase';
 import { Loading } from './proyect';
 import { auth } from '../firebase/firebase';
 import { onAuthStateChanged } from "firebase/auth";
+import toast from 'react-hot-toast';
 
 const defaultState = [{ select: "Email", title: "", icon: "fa-solid fa-envelope" },
 { select: "Telefono Movil", title: "", icon: "fa-solid fa-mobile-screen" }, { select: "Ubicación", title: "", icon: "fa-solid fa-location-dot" }];
@@ -19,7 +20,7 @@ var qrCode = new QRCodeStyling({
     width: 200,
     height: 200,
     data: `http://${window.location.hostname}/Vcard/Presentacion/QR/`,
-    image: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
+    image: "",
     dotsOptions: {
         color: "#B10fd1",
         gradient: { colorStops: [{ offset: 0, color: 'blue' }, { offset: 1, color: 'red' }] },
@@ -52,7 +53,7 @@ const NewVcard = props => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [social, setSocial] = useState([]);
-    const [img, setImg] = useState('https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg');
+    const [img, setImg] = useState('');
     const [rows, setRows] = useState(defaultState);
     const [isActive, setisActive] = useState('');
     const [color1b, setColor1b] = useState('');
@@ -494,7 +495,7 @@ const PreviewsVcard = props => {
     return (
         <div className='caja' style={{ opacity: !props.watch('form') ? 1 : 0, transition: "all 0.3s ease-in", width: !props.watch('form') ? "100%" : "0" }}>
             <div className='caja-backAvatar' style={{ borderRadius: props.watch('radius') }}>
-                <img src={props.img} style={{ borderRadius: props.watch('radius') }} className='caja-dinamica' alt='' />
+                {props.img === '' ? (<div className='caja-dinamica circleActive' />) : (<img src={props.img} style={{ borderRadius: props.watch('radius') }} className='caja-dinamica' alt='' />)}
             </div>
             {!props.watch('fondoActive') ? (
                 <img src={props.fondo} alt='' className='caja-image' />
@@ -537,20 +538,19 @@ const PreviewsVcard = props => {
     )
 };
 const FormVcard = props => {
-    const [image, setImage] = useState('https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg');
-    const [fondo, setImagefondo] = useState('https://icons.iconarchive.com/icons/designbolts/free-multimedia/1024/Photo-icon.png');
+    const [image, setImage] = useState('');
+    const [fondo, setImagefondo] = useState('');
     const handefile = (e) => {
         if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png') {
             if (e.target.files[0].size > 5242880) {
-                console.log('esta imagen es muy grande');
+                toast.error('esta imagen es muy grande');
             } else {
                 const file = e.target.files[0];
                 const TmpPath = URL.createObjectURL(file);
                 const spaceRef = reference(storage, `/photos/${file.name}`);
                 uploadBytes(spaceRef, file).then(onSnapshot => {
                     console.log('Uploaded a blob or file!', onSnapshot);
-                })
-                    .catch(error => console.log(error))
+                }).catch(error => console.log(error))
                     .then(async () => {
                         const downloadURL = await getDownloadURL(spaceRef);
                         props.setImg(downloadURL);
@@ -558,13 +558,13 @@ const FormVcard = props => {
                 setImage(TmpPath);
             }
         } else {
-            console.log("esto no es una imagen");
+            toast.error("esto no es una imagen");
         }
     };
     const handefondo = (e) => {
         if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png') {
             if (e.target.files[0].size > 5242880) {
-                console.log('esta imagen es muy grande');
+                toast.error('esta imagen es muy grande');
             } else {
                 const file = e.target.files[0]
                 const TmpPath = URL.createObjectURL(file);
@@ -580,7 +580,7 @@ const FormVcard = props => {
                 setImagefondo(TmpPath);
             }
         } else {
-            console.log("esto no es una imagen");
+            toast.error("esto no es una imagen");
         }
     };
     useEffect(() => {
@@ -610,7 +610,9 @@ const FormVcard = props => {
                     <input type="color" onClick={() => props.setValue('fondoActive', true)} className='circle' id='color' style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} {...props.register('colorFondo')} />
                 </div>
                 <div className="tooltip" onClick={() => document.getElementById('fondo1').click()}>
-                    <button type='button' className={props.watch('fondoActive') === true ? 'cuadro' : 'cuadro active'} onClick={() => props.setValue('fondoActive', false)}><img src={fondo} alt='' className='circle' /></button>
+                    <button type='button' className={props.watch('fondoActive') === true ? 'cuadro' : 'cuadro active'} onClick={() => props.setValue('fondoActive', false)}>
+                        {fondo === '' ? (<div className='circle circleActive' />) : (<img src={fondo} alt='' className='circle' />)}
+                    </button>
                     <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Imagen de Fondo</span>
                 </div>
                 <h4>Tipo de Fondo</h4>
@@ -627,9 +629,10 @@ const FormVcard = props => {
             </div>
             <div className="Form-Control IMG12" style={{ height: "100%" }}>
                 <input type="file" id='file' {...props.register('originalImageprofile', { onChange: handefile })} />
-                <img className={`avatar`} src={image} alt='' onClick={() => document.getElementById('file').click()} />
-                <button type='button' className={props.watch('radius') === "50%" ? 'cuadro active' : 'cuadro'} onClick={() => props.setValue('radius', "50%")}><img src={image} alt='' className='circle' /></button>
-                <button type='button' className={props.watch('radius') === "4px" ? 'cuadro active' : 'cuadro'} onClick={() => props.setValue('radius', "4px")}><img src={image} alt='' className='cuadre' /></button>
+                {image === '' ? (<div className='avatar circleActive' onClick={() => document.getElementById('file').click()} />) : (<img className={`avatar`} src={image} alt='' />)}
+                <button type='button' className={props.watch('radius') === "50%" ? 'cuadro active' : 'cuadro'} onClick={() => props.setValue('radius', "50%")}>
+                    {image === '' ? (<div className='circle circleActive' />) : (<img src={image} alt='' className={'circle'} />)}</button>
+                <button type='button' className={props.watch('radius') === "4px" ? 'cuadro active' : 'cuadro'} onClick={() => props.setValue('radius', "4px")}>{image === '' ? (<div className='cuadre circleActive' />) : (<img src={image} alt='' className={'cuadre'} />)}</button>
                 <h4>Margen de Imagen</h4>
             </div>
         </>
@@ -682,7 +685,7 @@ const FormTree = (props) => {
     const [color2b, setColor2b] = useState('#FFFFFF');
     const [color1z, setColor1z] = useState('#1400EB');
     const [color2z, setColor2z] = useState('#ED0012');
-    const [logo, setImagelogo] = useState('https://icons.iconarchive.com/icons/designbolts/free-multimedia/1024/Photo-icon.png');
+    const [logo, setImagelogo] = useState('');
     const [activeLink, setActiveLink] = useState(0);
     const [activeLinkEz, setActiveLinkEz] = useState(2);
     const dataRow = props.data;
@@ -724,17 +727,17 @@ const FormTree = (props) => {
     const handefondo = (e) => {
         if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png' || e.target.files[0].type === 'image/svg+xml') {
             if (e.target.files[0].size > 5242880) {
-                console.log('esta imagen es muy grande');
+                toast.error('esta imagen es muy grande');
             } else {
                 uploadImg(e.target.files[0]);
             }
         } else {
-            console.log("esto no es una imagen");
+            toast.error("esto no es una imagen");
         }
     };
     const uploadImg = (file) => {
         if (file != null) {
-            const spaceRef = reference(storage, `/photos/${file.name}`);
+            const spaceRef = reference(storage, `/photos/${Date.now()}`);
             uploadBytes(spaceRef, file).then(onSnapshot => {
                 console.log('Uploaded a blob or file!', onSnapshot);
             })
@@ -929,11 +932,13 @@ const FormTree = (props) => {
             <div className="Form-Control QRMARCOS" style={{ marginBottom: "40px" }}>
                 <input type="file" id='fondo12' onChange={handefondo} style={{ display: "none" }} />
                 <div className="tooltip" onClick={() => document.getElementById('fondo12').click()}>
-                    <button type='button' className={'cuadro'}><img src={logo} alt='' className='circle' /></button>
+                    <button type='button' className={'cuadro'}>
+                        {logo === '' ? (<div className='circle circleActive' />) : (<img src={logo} alt='' className='circle' />)}
+                    </button>
                     <span className="tooltiptext" style={{ width: "100px", left: "0", top: "-25px" }}>Logo QR</span>
                 </div>
                 <div className="tooltip">
-                    <button type='button' onClick={() => { qrCode.update({ image: "" }); setImagelogo('https://icons.iconarchive.com/icons/designbolts/free-multimedia/1024/Photo-icon.png') }}>x</button>
+                    <button type='button' onClick={() => { qrCode.update({ image: "" }); setImagelogo('') }}>x</button>
                     <span className="tooltiptext" style={{ width: "70px", left: "-25px", top: "-25px" }}>Cancel</span>
                 </div>
                 <h4 className="header-menu">Logo de QR  ◻️</h4>

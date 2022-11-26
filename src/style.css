@@ -707,7 +707,7 @@ body.light-mode .video-bg:before {
   align-items: center;
   width: 150px;
 }
-@media screen and (max-width:950px) {
+@media screen and (max-width: 950px) {
   .products {
     width: 120px;
   }
@@ -1249,7 +1249,7 @@ body.light-mode .video-bg:before {
   width: 100%;
 }
 @media screen and (max-width: 1055px) {
-  .button-Vcar{
+  .button-Vcar {
     position: relative;
     left: 100%;
   }
@@ -1659,7 +1659,25 @@ button:hover .icon-container i {
   height: 100px;
   border-radius: 50px;
   z-index: 1;
-  background-color: #007e67;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Camera_Flat_Icon_Vector.svg/1200px-Camera_Flat_Icon_Vector.svg.png"),
+    linear-gradient(
+      to right top,
+      #cf4af3,
+      #e73bd7,
+      #f631bc,
+      #fd31a2,
+      #ff3a8b,
+      #ff4b78,
+      #ff5e68,
+      #ff705c,
+      #ff8c51,
+      #ffaa49,
+      #ffc848,
+      #ffe652
+    );
 }
 .caja-image {
   width: 100%;
@@ -1995,6 +2013,27 @@ button:hover .icon-container i {
   height: 35px;
   background-color: var(--theme-color);
   border-radius: 50%;
+}
+.circleActive {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Camera_Flat_Icon_Vector.svg/1200px-Camera_Flat_Icon_Vector.svg.png"),
+    linear-gradient(
+      to right top,
+      #cf4af3,
+      #e73bd7,
+      #f631bc,
+      #fd31a2,
+      #ff3a8b,
+      #ff4b78,
+      #ff5e68,
+      #ff705c,
+      #ff8c51,
+      #ffaa49,
+      #ffc848,
+      #ffe652
+    );
 }
 .Form-Control .cuadre {
   width: 35px;
@@ -2335,10 +2374,58 @@ button:hover .icon-container i {
   border-radius: 50%;
   height: 160px;
 }
-.profile .caja-backAvatar img{
+.profile .caja-dinamica {
   width: 145px;
   border-radius: 50%;
   height: 145px;
+}
+.caja-dinamica.active {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("https://static.thenounproject.com/png/3095076-200.png"),
+    linear-gradient(
+      to right top,
+      #cf4af3,
+      #e73bd7,
+      #f631bc,
+      #fd31a2,
+      #ff3a8b,
+      #ff4b78,
+      #ff5e68,
+      #ff705c,
+      #ff8c51,
+      #ffaa49,
+      #ffc848,
+      #ffe652
+    );
+  animation-name: rotate;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+@keyframes rotate {
+  from {
+    transform: rotate(-360deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.profile .caja-backAvatar:hover::after {
+  content: "";
+  width: 100px;
+  z-index: 999;
+  height: 100px;
+  position: absolute;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 10vh;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/3094/3094216.png");
+}
+.profile .caja-backAvatar:hover {
+  cursor: pointer;
+  filter: brightness(80%);
 }
 .Form-vcard.profile h2 {
   position: relative;
@@ -2370,7 +2457,7 @@ button:hover .icon-container i {
   margin-bottom: 20px;
   font-size: 16px;
 }
-@media screen and (max-width: 950px){
+@media screen and (max-width: 950px) {
   .Form-vcard.profile {
     display: block;
     overflow: hidden;
@@ -2380,10 +2467,10 @@ button:hover .icon-container i {
     left: 10vh;
     float: left;
   }
-  .contacss{
+  .contacss {
     margin-bottom: 8vh;
   }
-  .Form-vcard.password{
+  .Form-vcard.password {
     margin-bottom: 55px;
   }
   .Form-vcard.profile h2 {
@@ -3190,7 +3277,7 @@ input[type="checkbox"] {
   input[type="checkbox"] {
     visibility: hidden;
   }
-  .header .header-menu{
+  .header .header-menu {
     font-size: 15px;
   }
   .caja .caja-button button {

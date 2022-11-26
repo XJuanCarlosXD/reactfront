@@ -43,7 +43,7 @@ export const Proyect = props => {
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const uid = user.uid;
-                const q = query(VcardDataColletion, where("uid", "==", `${uid}`));
+                const q = query(VcardDataColletion, where("uid", "==", uid));
                 await getDocs(q).then((res) => {
                     setData(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
                 }).then(() => {

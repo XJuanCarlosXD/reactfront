@@ -1,7 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
-import { onAuthStateChanged, updateProfile, updatePassword, reauthenticateWithCredential } from "firebase/auth";
+import { onAuthStateChanged, updateProfile, updatePassword } from "firebase/auth";
+import { ref as reference, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
+import { storage } from '../firebase/firebase';
 import { useForm } from "react-hook-form";
 import { Loading } from './proyect';
 import toast from 'react-hot-toast';
@@ -10,17 +14,48 @@ import toast from 'react-hot-toast';
 export const Profile = props => {
     const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
     const [isActive, setIsActive] = React.useState('');
+    const [photoactive, setPhotoactive] = React.useState('');
+    const VcardDataColletion = collection(db, "VcardData");
     React.useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log(user)
                 setValue('displayName', user.displayName);
                 setValue('photoURL', user.photoURL);
                 setValue('email', user.email);
                 setValue('phoneNumber', user.phoneNumber);
+                const uid = user.uid;
+                const q = query(VcardDataColletion, where("uid", "==", uid));
+                await getDocs(q).then((res) => {
+                    setValue('count', res.docs.map((doc) => (doc.id)).length);
+                })
             }
         });
-    }, [])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setValue])
+    const handefondo = (e) => {
+        if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png' || e.target.files[0].type === 'image/svg+xml') {
+            if (e.target.files[0].size > 5242880) {
+                toast.error('esta imagen es muy grande');
+            } else {
+                uploadImg(e.target.files[0]);
+            }
+        } else {
+            toast.error("esto no es una imagen");
+        }
+    };
+    const uploadImg = (file) => {
+        setPhotoactive('active');
+        const spaceRef = reference(storage, `/photos/${Date.now()}`);
+        uploadBytes(spaceRef, file).then(onSnapshot => {
+            console.log('Uploaded a blob or file!', onSnapshot);
+        }).then(async () => {
+            const downloadURL = await getDownloadURL(spaceRef);
+            setValue('photoURL', downloadURL);
+            updateProfile(auth.currentUser, {
+                photoURL: downloadURL
+            })
+        }).then(() => setPhotoactive('')).catch(error => console.log(error))
+    };
     const Iuser = (data) => {
         setIsActive('is-active');
         updateProfile(auth.currentUser, {
@@ -43,13 +78,14 @@ export const Profile = props => {
                         <div className="header">
                             <h3 className="header-menu">Mi Cuenta 🧑‍🏫</h3>
                         </div>
-                        <div className='caja-backAvatar' style={{ position: "relative", margin: "0 auto" }}>
-                            <img src={watch('photoURL')} className='caja-dinamica' alt='' />
+                        <div className='caja-backAvatar' style={{ position: "relative", margin: "0 auto" }} onClick={() => document.getElementById('userPhoto')?.click()}>
+                            <img src={watch('photoURL')} className={`caja-dinamica ${photoactive}`} alt='' />
+                            <input type="file" onChange={handefondo} id='userPhoto' hidden />
                         </div>
                         <h2>{watch('displayName')}</h2>
                         <h4>{watch('email')}</h4>
                         <div className='vcard-create'>
-                            <h2>3</h2>
+                            <h2>{watch('count')}</h2>
                             <h4>Proyectos Activos 🟢</h4>
                         </div>
                     </div>
