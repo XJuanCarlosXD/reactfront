@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 const Auth = props => {
     React.useEffect(() => {
         document.querySelector('.left-side').style.display = 'none';
-        document.querySelector('.sidenav').style.display = 'none';
         document.querySelector('.rekpa').classList.remove('app');
         document.querySelector('.rjii').classList.add('wide');
     }, [])

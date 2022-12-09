@@ -9,8 +9,9 @@ const Home = () => {
           <Link className="menu-link-main" href="#">Inicio 🏠</Link>
           <div className="header-menu">
             <Link className="main-header-link is-active" to="/Proyectos/new/Vcard">Crear ➕</Link>
-            <Link className="main-header-link" to={'/Planes'}>Planes 📚</Link>
-            <Link className="main-header-link" href="#">Web</Link>
+            {localStorage.getItem('uid') === null ? <Link className="main-header-link is-active" to="/Login">Iniciar Seccion </Link> : ''}
+            {/* <Link className="main-header-link" to={'/Planes'}>Planes 📚</Link> */}
+            {/* <Link className="main-header-link" href="#">Web</Link> */}
 
           </div>
         </div>
@@ -53,7 +54,7 @@ const Home = () => {
               </div>
               <div className="app-card">
                 <span>
-                 🎨 Diseño
+                  🎨 Diseño
                 </span>
                 <div className="app-card__subtext">Diseñe codigo QR con efectos visuales estándar de la industria.</div>
                 <div className="app-card-buttons">

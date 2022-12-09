@@ -59,6 +59,24 @@ body {
   padding: 2em;
   width: 100%;
   height: 100vh;
+  cursor: url(./img/cursor.png), default;
+}
+a,
+button,
+.header-profile {
+  cursor: url(./img/pointer.png), pointer;
+}
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+.content-text,
+input,
+.app-card__subtext {
+  cursor: url(./img/text.png), text;
 }
 @media screen and (max-width: 480px) {
   body {
@@ -93,7 +111,7 @@ img {
   padding: 8px;
   border-radius: 50%;
   z-index: 3;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 .dark-light svg {
   width: 24px;
@@ -102,7 +120,9 @@ img {
   stroke: #ffce45;
   transition: 0.5s;
 }
-
+.light-mode {
+  cursor: url(./img/defaulL.png), default;
+}
 .light-mode .dark-light svg {
   fill: transparent;
   stroke: var(--theme-color);
@@ -186,7 +206,7 @@ body.light-mode .video-bg:before {
 .btn {
   text-decoration: none;
   color: var(--theme-color);
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 .sidenav {
   display: none;
@@ -434,7 +454,7 @@ body.light-mode .video-bg:before {
 .left-side {
   flex-basis: 240px;
   border-right: 1px solid var(--border-color);
-  padding: 26px;
+  padding: 10px;
   overflow: auto;
   flex-shrink: 0;
 }
@@ -449,8 +469,17 @@ body.light-mode .video-bg:before {
 }
 
 .side-title {
-  color: var(--inactive-color);
-  margin-bottom: 14px;
+  color: var(--theme-color);
+  position: fixed;
+  z-index: 6;
+  top: 9vh;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 80.9%);
+  height: calc(100% - 89%);
+  background: var(--dropdown-bg);
+  padding: 15px;
 }
 
 .side-menu {
@@ -631,7 +660,6 @@ body.light-mode .video-bg:before {
   color: #fff;
   border-radius: 20px;
   margin-top: 16px;
-  cursor: pointer;
   transition: 0.3s;
   white-space: nowrap;
 }
@@ -670,7 +698,7 @@ body.light-mode .video-bg:before {
   margin: 0;
   border-radius: 14px;
   border: 1px solid var(--theme-bg-color);
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 .content-section ul li {
   list-style: none;
@@ -796,7 +824,7 @@ body.light-mode .video-bg:before {
   left: -5px;
   background: transparent;
   border: none;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 .dropdown ul {
   position: absolute;
@@ -920,7 +948,7 @@ body.light-mode .video-bg:before {
   height: 15px;
   border: 1px solid var(--theme-color);
   border-radius: 4px;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   flex-shrink: 0;
 }
 
@@ -957,7 +985,7 @@ body.light-mode .video-bg:before {
   border-radius: 14px;
   border: 1px solid var(--theme-bg-color);
   padding: 20px;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   transition: 0.3s ease;
 }
 .app-card:hover {
@@ -991,7 +1019,7 @@ body.light-mode .video-bg:before {
   margin-left: auto;
   margin-top: 16px;
 }
-@media screen and (max-width: 950px) {
+@media screen and (max-width: 1110px) {
   .app-card {
     width: calc(50% - 20px);
   }
@@ -1000,7 +1028,7 @@ body.light-mode .video-bg:before {
     margin-left: 0px;
   }
 }
-@media screen and (max-width: 950) {
+@media screen and (max-width: 565px) {
   .app-card {
     width: calc(100% - 20px);
     margin-top: 20px;
@@ -1048,7 +1076,8 @@ body.light-mode .video-bg:before {
 .adobe-product:hover .form .second {
   height: 100px;
   top: -55px;
-  width: 100%;
+  left: 30px;
+  width: 70%;
   max-width: fit-content;
   transition: all 1s ease-in;
 }
@@ -1108,6 +1137,7 @@ body.light-mode .video-bg:before {
 .adobe-product:hover .form::before {
   height: 14vh;
   top: -7vh;
+  left: 30vh;
   transition: all 1s ease-in;
 }
 .form .second {
@@ -1375,7 +1405,7 @@ body.light-mode .video-bg:before {
   font-family: sans-serif;
   font-weight: bold;
   background: rgba(0, 0, 0, 0.3);
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -1724,7 +1754,7 @@ button:hover .icon-container i {
 }
 .caja .caja-button button:hover {
   background-color: #007e67;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   border: solid var(--theme-color);
 }
 .caja .caja-button button span {
@@ -1857,7 +1887,7 @@ button:hover .icon-container i {
   position: relative;
   left: 10px;
   top: 4px;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   box-shadow: 0 0 0 2px rgba(134, 140, 160, 0.02);
   color: #f7f7f7;
   transition: all 0.7s ease-in;
@@ -1901,7 +1931,7 @@ button:hover .icon-container i {
   margin: 0 40%;
   font-size: 20px;
   color: var(--btn-bg);
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   transition: all 0.5s ease-in;
 }
 .Form-Control input[type="color"].color {
@@ -1956,7 +1986,7 @@ button:hover .icon-container i {
   margin-top: 5px;
   right: 70px;
   position: relative;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 .Form-Control input[type="file"]::before {
   content: "✏️";
@@ -1970,7 +2000,7 @@ button:hover .icon-container i {
   outline: none;
   white-space: nowrap;
   --webkit-user-select: none;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   font-weight: 700;
   font-size: 20pt;
 }
@@ -1996,7 +2026,7 @@ button:hover .icon-container i {
   margin-left: 10px;
   left: 10px;
   top: 4px;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   box-shadow: 0 0 0 1px var(--theme-bg-color);
   color: #f7f7f7;
   transition: all 0.7s ease-in;
@@ -2328,7 +2358,7 @@ button:hover .icon-container i {
 }
 .content-form.social .col {
   left: 5px;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   width: calc(50px - 12px);
   height: calc(50px - 12px);
 }
@@ -2424,7 +2454,7 @@ button:hover .icon-container i {
   background-image: url("https://cdn-icons-png.flaticon.com/512/3094/3094216.png");
 }
 .profile .caja-backAvatar:hover {
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   filter: brightness(80%);
 }
 .Form-vcard.profile h2 {
@@ -2657,11 +2687,11 @@ input[type="checkbox"] {
 .toggle label {
   color: var(--theme-color);
   position: relative;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 
 .toggle input[type="checkbox"] + label::before {
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   content: "";
   display: block;
   height: 18px;
@@ -2674,7 +2704,7 @@ input[type="checkbox"] {
   background: var(--bg);
 }
 .toggle input[type="checkbox"] + label::after {
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   content: "-";
   display: flex;
   align-items: center;
@@ -3418,7 +3448,7 @@ input[type="checkbox"] {
     z-index: 999;
     top: 10px;
     right: 25px;
-    cursor: pointer;
+    cursor: url(./img/pointer.png), pointer;
     position: fixed;
   }
   .caja.active .caja {
@@ -3660,7 +3690,7 @@ input[type="checkbox"] {
 }
 .container .card:hover .face.face2 {
   height: 60px;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 .container .card:hover .face.face2 .arrow::before {
   content: "";
@@ -3816,7 +3846,7 @@ tfoot {
   padding-inline: 1em;
   transition: 0.3s;
   border: 0;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
   font: inherit;
 }
 
@@ -3920,14 +3950,14 @@ fieldset.mt-3 {
   border-radius: 6px;
   border: transparent;
   color: #fff;
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 .btns-login button:hover {
   border: 1px solid #fff;
 }
 
 .header-profile i {
-  cursor: pointer;
+  cursor: url(./img/pointer.png), pointer;
 }
 .reLink {
   display: flex;
@@ -4059,9 +4089,26 @@ fieldset.mt-3 {
 .iphone.login .Form-Control input {
   background: var(--theme-bg-color);
 }
+.Form-vcard{
+  position: relative;
+}
+.content-button.deletp{
+  margin: 10px;
+  position: relative;
+  top: 16px;
+  left: calc(100% - 12%);
+  transform: translate(-50%, -50%);
+}
 @media screen and (max-width: 950px) {
   .nEscaneo {
     left: 3.5vh;
+  }
+  .text-header{
+    margin-bottom: 5vh;
+  }
+  .text-header p{
+    font-size: 12px;
+    white-space: normal;
   }
   .btns-login {
     font-size: 0;
@@ -4071,6 +4118,9 @@ fieldset.mt-3 {
     width: 5.5vh;
     height: 5.5vh;
     border-radius: 50%;
+  }
+  .content-button.deletp{
+    left: 50%;
   }
   .btns-login i {
     font-size: 20px;
@@ -4138,4 +4188,66 @@ fieldset.mt-3 {
     margin-top: 30px;
     background: rgb(255 255 255 / 90%);
   }
+}
+.sideMenu .caja-info {
+  overflow: none;
+  width: 100%;
+  border: 1px solid var(--theme-bg-color);
+  box-shadow: 0 4px 6px 0 var(--theme-bg-color);
+  border-radius: 8px;
+  margin: 20px auto;
+  margin-top: 60px;
+  background: var(--theme-bg-color);
+  color: var(--theme-color);
+}
+.sideMenu .caja-info .content-form {
+  width: 100%;
+  border-radius: 5px;
+  border-top: 1px solid var(--theme-color);
+  margin: 0;
+}
+.sideMenu .caja-info .content-form:nth-child(1) {
+  border-top: 0;
+}
+.sideMenu .line-social {
+  border-top: 1px solid #3c3a3a;
+  border-radius: 4px;
+}
+.sideMenu .caja-info .content-form:hover {
+  cursor: url(./img/pointer.png), pointer;
+  background: rgba(113 119 144 / 25%);
+  transition: all 0.2s ease-in;
+}
+.sideMenu .caja-info img {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  border-radius: 5px;
+  border: solid transparent;
+}
+.text-news {
+  overflow: hidden;
+  width: calc(100% - 28%);
+}
+.text-news a {
+  color: var(--theme-color);
+  top: 0.5vh;
+  position: relative;
+  text-overflow: clip ellipsis;
+  text-align: left;
+  text-decoration: none;
+  font-size: 10px;
+}
+.text-news p {
+  width: 100%;
+  height: 20px;
+  font-size: 9px;
+  font-weight: 600;
+}
+.text-header {
+  flex-direction: column;
+}
+.text-header h3,
+.text-header p {
+  margin-right: auto;
 }

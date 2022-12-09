@@ -6,6 +6,9 @@ import html2canvas from 'html2canvas';
 import QRCodeStyling from 'qr-code-styling';
 import { auth } from '../firebase/firebase';
 import { onAuthStateChanged } from "firebase/auth";
+import toast from 'react-hot-toast';
+import { ref as reference, deleteObject } from "firebase/storage";
+import { storage } from '../firebase/firebase';
 
 export const Proyect = props => {
     const [activeLink, setActiveLink] = useState('');
@@ -60,10 +63,20 @@ export const Proyect = props => {
         }
         setDropdown(!dropdown);
     };
-    const deleteQR = async (id) => {
-        await deleteDoc(doc(db, "VcardData", id));
+    const deleteQR = async (id, photos) => {
         setModal('');
-        getData();
+        setisActive('is-active');
+        photos.forEach(async (row) => {
+            if (row !== '') {
+                const spaceRef = reference(storage, `${row}`);
+                await deleteObject(spaceRef)
+            }
+        })
+        await deleteDoc(doc(db, "VcardData", id)).then(() => {
+            getData();
+            setChek(false);
+            toast.success('Proyecto eliminado')
+        })
     };
     const CloneProyect = async (id) => {
         try {
@@ -82,7 +95,7 @@ export const Proyect = props => {
     return (
         <div className="main-container">
             <div className="main-header">
-                <Link className="menu-link-main" href="#">Todos los Proyectos</Link>
+                <Link className="menu-link-main" href="#">Mis Proyectos</Link>
                 <div className="header-menu">
                     <div className='button-Vcar'>
                         <Link className="effect1 main-header-link" to="/Proyectos/new/Vcard">
@@ -132,13 +145,13 @@ export const Proyect = props => {
                                         <div className="firt">
                                             <h3> Virtual Card</h3>
                                             <h4>{row.nameProyect}</h4>
-                                            <div className='text-date'>Creado: {new Date(row.createAt.seconds).toLocaleString()}</div>
+                                            <div className='text-date'>Creado: {new Date(row.createAt).toLocaleString()}</div>
                                         </div>
                                         <div className="second">
                                             <span>/QR/{row.id}</span>
                                             <span className="status"><i className={`status-circle ${row.active ? 'green' : 'red'}`}></i>
                                                 {row.active ? 'Activo' : 'Desactivado'}</span>
-                                            <div className='text-update'>Modificado: {new Date(row.updateAt.seconds).toLocaleString()}</div>
+                                            <div className='text-update'>{row.updateAt === '' ? 'Sin modificaciones' : `Modificado: ${new Date(row.updateAt).toLocaleString()}`}</div>
                                         </div>
                                         <div className="three">
                                             <h3>{escaneo}</h3>
@@ -205,7 +218,7 @@ export const Proyect = props => {
                                             </div>
                                             <div className="content-button-wrapper">
                                                 <button className="content-button status-button open close" onClick={() => setModal('')}><i className="fa-solid fa-xmark"></i> Cancel</button>
-                                                <button className={`content-button status-button ${!check ? 'open close' : ''}`} disabled={!check} onClick={() => deleteQR(row.id)}>Continue <i className="fa-solid fa-trash-can"></i></button>
+                                                <button className={`content-button status-button ${!check ? 'open close' : ''}`} disabled={!check} onClick={() => deleteQR(row.id, [row.profile.img, row.profile.fondo])}>Continue <i className="fa-solid fa-trash-can"></i></button>
                                             </div>
                                         </div>
                                     </div>

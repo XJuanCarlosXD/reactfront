@@ -9,7 +9,6 @@ import StepWizard from 'react-step-wizard';
 const ReAuth = props => {
     React.useEffect(() => {
         document.querySelector('.left-side').style.display = 'none';
-        document.querySelector('.sidenav').style.display = 'none';
         document.querySelector('.rekpa').classList.remove('app');
         document.querySelector('.rjii').classList.add('wide');
     }, [])

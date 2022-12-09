@@ -5,7 +5,7 @@ import Home from '../components/home';
 import Navbar from "../layouts/navbar";
 import Planes from '../components/planes';
 import NewVcard from '../components/newVcard';
-import { Password, Profile, Security } from '../components/profile';
+import { Profile } from '../components/profile';
 import Vcard from '../components/Vcard';
 import Auth from '../components/Auth';
 import Detalle from '../components/Detalle';
@@ -23,13 +23,9 @@ const RouterReact = props => {
                 <Route path='/Proyectos/Detalle/:id' element={<Detalle />} />
                 <Route path='/Analisis' element={<Home />} />
                 <Route path='/Proyectos' element={<Proyect />} />
-                <Route path='/Proyectos/Propios' element={<Proyect />} />
-                <Route path='/Proyectos/Activos' element={<Proyect />} />
                 <Route path='/Proyectos/new/Vcard' element={<NewVcard />} />
                 <Route path='/Proyectos/new/Vcard/:id' element={<NewVcard />} />
                 <Route path='/Cuenta' element={<Profile />} />
-                <Route path='/Cuenta/Password' element={<Password />} />
-                <Route path='/Cuenta/Segurity' element={<Security />} />
                 <Route path='/Configuracion' />
                 <Route path='*' element={<Navigate replace to="/Proyectos" />} />
             </Route>
