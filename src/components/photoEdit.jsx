@@ -1,21 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useEffect, useState } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import StepWizard from "react-step-wizard";
-import { Link, useNavigate, useParams } from 'react-router-dom';
 import QRCodeStyling from 'qr-code-styling';
-import html2canvas from 'html2canvas';
-import { useForm } from "react-hook-form";
 import { collection, addDoc, getDoc, doc, updateDoc } from 'firebase/firestore';
-import { ref as reference, uploadBytes, deleteObject, getDownloadURL } from "firebase/storage";
-import { storage } from '../firebase/firebase';
 import { db } from '../firebase/firebase';
 import { Loading } from './proyect';
+import { ref as reference, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from '../firebase/firebase';
+import html2canvas from 'html2canvas';
+import toast from 'react-hot-toast';
 import { auth } from '../firebase/firebase';
 import { onAuthStateChanged } from "firebase/auth";
-import toast from 'react-hot-toast';
-
-const defaultState = [{ select: "Email", title: "", icon: "fa-solid fa-envelope" },
-{ select: "Telefono Movil", title: "", icon: "fa-solid fa-mobile-screen" }, { select: "Ubicación", title: "", icon: "fa-solid fa-location-dot" }];
+import { useForm } from "react-hook-form";
 var qrCode = new QRCodeStyling({
     width: 200,
     height: 200,
@@ -53,139 +49,22 @@ const defaulvalues = {
 
     }
 };
-const NewVcard = props => {
+const PhotoEdit = props => {
     const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm(defaulvalues);
     const { id } = useParams();
     const navigate = useNavigate();
-    const [social, setSocial] = useState([]);
-    const [rows, setRows] = useState(defaultState);
-    const [isActive, setisActive] = useState('');
     const [color1b, setColor1b] = useState('');
     const [color2b, setColor2b] = useState('');
     const [color1m, setColor1m] = useState('#FFFFFF');
     const [color1B, setColor1B] = useState('#1400EB');
     const [color2B, setColor2B] = useState('#ED0012');
     const [active, setActive] = useState(false);
+    const [isActive, setisActive] = useState('');
     const [fileExt, setfileExt] = useState('png');
     const [data, setDataa] = useState({ ...qrCode._options });
-    const [dataprofile, setDataprofile] = useState([]);
     const [marco, setMarco] = useState(1);
     const printRef = useRef();
     const ref = useRef(null);
-    const uploadFiles = async (file, name) => {
-        const spaceRef = reference(storage, `/photos/${Date.now()}`);
-        await uploadBytes(spaceRef, file).then(onSnapshot => {
-            toast.success('Imagenes Guardas')
-        }).catch(error => console.log(error))
-            .then(async () => {
-                const downloadURL = await getDownloadURL(spaceRef);
-                setValue(name, downloadURL);
-            })
-    }
-    const onSubmit = async data => {
-        const VcardDataColletion = collection(db, "VcardData");
-        setisActive('is-active');
-        setActive(!active);
-        setValue('form', true);
-        if (data?.fileFondo !== '') {
-            await uploadFiles(data.fileFondo, 'fondo')
-        }
-        await uploadFiles(data.fileImage, 'image').then(async () => {
-            const arraydata = {
-                nameProyect: data.proyectName,
-                active: true,
-                proyect: 'Virtual Card',
-                edit: '/Proyectos/new/Vcard/',
-                uid: watch('uid'),
-                createAt: new Date().toLocaleString(),
-                updateAt: '',
-                stadistic: { movil: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }], web: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }] },
-                marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
-                QRdata: { ...qrCode._options },
-                contact: [...rows],
-                profile: { name: data.name, position: data.position, img: watch('image'), radius: data.radius, fondo: watch('fondo'), fondoActive: data.fondoActive, colorFondo: data.colorFondo, colorBotones: data.colorButton },
-                social: [...social],
-            };
-            try {
-                await addDoc(VcardDataColletion, arraydata).then(async (docRef) => {
-                    qrCode.update({ data: `https://vcarddo-2b240.web.app/#/Vcard/QR/${docRef.id}` });
-                    const reference = doc(db, "VcardData", docRef.id);
-                    await updateDoc(reference, { QRdata: { ...qrCode._options } });
-                }).then(() => {
-                    onDownloadClick();
-                }).then(() => {
-                    navigate("/Proyectos");
-                })
-            } catch (error) {
-                setisActive('');
-                console.log(error);
-            }
-        })
-    };
-    const onUpload = async data => {
-        setisActive('is-active');
-        setActive(!active);
-        setValue('form', true);
-        const VcardDataColletion = doc(db, "VcardData", id);
-        if (data.dataProfile.img !== data.image) {
-            const spaceRef = reference(storage, `${data.dataProfile.img}`);
-            if (data.dataProfile.img !== '') {
-                await deleteObject(spaceRef).then(async () => {
-                    await uploadFiles(data.fileImage, 'image')
-                })
-            }
-        }
-        if (data.dataProfile.fondo !== data.fondo) {
-            const spaceRef = reference(storage, `${data.dataProfile.img}`);
-            await deleteObject(spaceRef).then(async () => {
-                await uploadFiles(data.fileFondo, 'fondo')
-            })
-        }
-        try {
-            const arraydata = {
-                uid: watch('uid'),
-                proyect: 'Virtual Card',
-                edit: '/Proyectos/new/Vcard/',
-                nameProyect: data.proyectName,
-                active: true,
-                updateAt: new Date().toLocaleString(),
-                marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
-                QRdata: { ...qrCode._options },
-                contact: [...rows],
-                profile: { name: data.name, position: data.position, img: watch('image'), radius: data.radius, fondo: watch('fondo'), fondoActive: data.fondoActive, colorFondo: data.colorFondo, colorBotones: data.colorButton },
-                social: [...social],
-            };
-            await updateDoc(VcardDataColletion, arraydata).then(() => {
-                console.log('datos actulizados');
-                onDownloadClick();
-            }).then(() => {
-                navigate("/Proyectos");
-            })
-        } catch (error) {
-            setisActive('');
-            console.log(error);
-        }
-    };
-    const SeeProfile = () => {
-        setActive(!active);
-        document.querySelector('.overlay-app').classList.toggle('is-active');
-    }
-    const handleOnChange = (index, name, value) => {
-        const copyRows = [...rows];
-        copyRows[index] = {
-            ...copyRows[index],
-            [name]: value
-        };
-        setRows(copyRows);
-    };
-    const handleOnAdd = () => {
-        setRows(rows.concat({ select: "", title: "", icon: "" }));
-    };
-    const handleOnRemove = index => {
-        const copyRows = [...rows];
-        copyRows.splice(index, 1);
-        setRows(copyRows);
-    };
     const onDownloadClick = async () => {
         const element = printRef.current;
         const canvas = await html2canvas(element);
@@ -209,40 +88,110 @@ const NewVcard = props => {
         await getDoc(doc(db, "VcardData", id)).then(res => {
             if (res.exists()) {
                 const data = res.data();
-                const adreess = res.data().contact.find(e => e.select === "Ubicación").adreess
                 qrCode = new QRCodeStyling(data.QRdata);
                 setDataa(data.QRdata);
-                setDataprofile(data.profile);
-                setRows([...data.contact]);
-                setValue('name', data.profile.name);
-                setValue('dataProfile', data.profile)
-                setValue('position', data.profile.position);
                 setMarco(data.marcoQR.marco);
                 setColor1B(data.marcoQR.color1B);
                 setColor2B(data.marcoQR.color2B);
                 setColor1b(data.marcoQR.color1b);
                 setColor2b(data.marcoQR.color2b);
                 setColor1m(data.marcoQR.color1m);
-                setValue('image', data.profile.img);
-                setValue('fondo', data.profile.fondo);
-                setValue('direccion', adreess.direccion);
-                setValue('numeracion', adreess.numeracion);
-                setValue('codigo', adreess.codigo);
-                setValue('ciudad', adreess.ciudad);
-                setValue('estado', adreess.estado);
-                setValue('pais', adreess.pais);
-                setValue('fondoActive', data.profile.fondoActive);
-                setValue('colorBotones', data.profile.colorBotones);
-                setValue('colorFondo', data.profile.colorFondo);
-                setValue('radius', data.profile.radius);
                 setValue('proyectName', data.nameProyect);
-                setSocial([...data.social]);
+                setValue('image', data.data);
+                setValue('fileO', data.data);
+                setValue('urlDonwload', data.data);
                 setTimeout(() => { qrCode.append(ref.current) }, 1000);
             } else {
                 toast.error('No existe vCard');
             }
         }).then(() => setisActive(''))
             .catch(error => console.log(error))
+    };
+    const uploadFiles = async (file, name) => {
+        const spaceRef = reference(storage, `/photos/${Date.now()}`);
+        await uploadBytes(spaceRef, file).then(onSnapshot => {
+            toast.success('Archivo Guardado')
+        }).catch(error => console.log(error))
+            .then(async () => {
+                const downloadURL = await getDownloadURL(spaceRef);
+                setValue(name, downloadURL);
+            })
+    }
+    const onSubmit = async data => {
+        const VcardDataColletion = collection(db, "VcardData");
+        setisActive('is-active');
+        setActive(!active);
+        setValue('form', true);
+        await uploadFiles(data.urlDonwload, 'urlDonwload').then(async () => {
+            const arraydata = {
+                nameProyect: data.proyectName,
+                active: true,
+                proyect: 'Archivos QR',
+                edit: '/Proyectos/Archivos/QR/',
+                uid: watch('uid'),
+                createAt: new Date().toLocaleString(),
+                updateAt: '',
+                data: watch('urlDonwload'),
+                stadistic: { movil: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }], web: [{ fecha: new Date().toLocaleDateString(), escaneo: 0 }] },
+                marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
+                QRdata: { ...qrCode._options },
+            };
+            try {
+                await addDoc(VcardDataColletion, arraydata).then(async (data) => {
+                    qrCode.update({ data: `https://vcarddo-2b240.web.app/#/Files/Documento/rediricio/QR/${data.id}` });
+                    const reference = doc(db, "VcardData", data.id);
+                    await updateDoc(reference, { QRdata: { ...qrCode._options } });
+                })
+            } catch (error) {
+                setisActive('');
+                console.log(error);
+            }
+        }).then(() => {
+            onDownloadClick();
+        }).then(() => {
+            navigate("/Proyectos");
+        })
+    };
+    const onUpload = async data => {
+        setisActive('is-active');
+        setActive(!active);
+        setValue('form', true);
+        const VcardDataColletion = doc(db, "VcardData", id);
+        if(data.fileO !== data.urlDonwload){
+            await uploadFiles(data.urlDonwload, 'urlDonwload')
+        }
+        try {
+            const arraydata = {
+                uid: watch('uid'),
+                nameProyect: data.proyectName,
+                proyect: 'Archivos QR',
+                edit: '/Proyectos/Archivos/QR/',
+                active: true,
+                data: watch('urlDonwload'),
+                updateAt: new Date().toLocaleString(),
+                marcoQR: { marco: marco, color1B: color1B, color2B: color2B, color1m: color1m, color1b: color1b, color2b: color2b },
+                QRdata: { ...qrCode._options }
+            };
+            await updateDoc(VcardDataColletion, arraydata).then(() => {
+                console.log('datos actulizados');
+                onDownloadClick();
+            }).then(() => {
+                navigate("/Proyectos");
+            })
+        } catch (error) {
+            setisActive('');
+            console.log(error);
+        }
+    };
+    const SeeProfile = () => {
+        setActive(!active);
+        document.querySelector('.overlay-app').classList.toggle('is-active');
+    }
+    const handefile = (e) => {
+        const file = e.target.files[0];
+        const TmpPath = URL.createObjectURL(file);
+        setValue('image', TmpPath);
+        setValue('urlDonwload', e.target.files[0])
     };
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -252,12 +201,7 @@ const NewVcard = props => {
                 navigate('/Login')
             }
         });
-    }, [])
-    useEffect(() => {
-        if (rows.length > 5) {
-            setRows(rows.splice(1, 5))
-        }
-    }, [rows])
+    }, [navigate, setValue])
     useEffect(() => {
         if (id !== undefined) {
             setData(id);
@@ -269,7 +213,7 @@ const NewVcard = props => {
     return (
         <div className="main-container">
             <div className="main-header">
-                <Link className="menu-link-main" href="#">Nueva Vcard</Link>
+                <Link className="menu-link-main" href="#">Subir Fotos</Link>
                 <div className="header-menu">
                     <div className='btn-profile' onClick={SeeProfile}>
                         <div role={'button'}>
@@ -278,30 +222,32 @@ const NewVcard = props => {
                     </div>
                 </div>
             </div>
-            <form className="content-wrapper rj45" onSubmit={id !== undefined ? handleSubmit(onUpload) : handleSubmit(onSubmit)}>
-                <div className='content-form rght6'>
+            <form className={`content-wrapper ${watch('form') ? 'rj45' : ''}`} onSubmit={id !== undefined ? handleSubmit(onUpload) : handleSubmit(onSubmit)}>
+                <div className='content-form rght6 j6k4'>
                     <div className='Form-vcard'>
                         <StepWizard nav={<ButtonWizzar setValue={setValue} />}>
-                            <>
-                                <FormVcard
-                                    watch={watch}
-                                    register={register}
-                                    setValue={setValue}
-                                    errors={errors}
-                                    id={id}
-                                    data={dataprofile}
-                                />
-                                <FormTwo
-                                    rows={rows}
-                                    setRSocial={(value) => setSocial(value)}
-                                    handleOnChange={handleOnChange}
-                                    handleOnAdd={handleOnAdd}
-                                    social={social}
-                                    register={register}
-                                    watch={watch}
-                                    errors={errors}
-                                    handleOnRemove={handleOnRemove} />
-                            </>
+                            <div>
+                                <br />
+                                <div className="Form-Control">
+                                    <input type="text" className={errors.proyectName && 'error'} {...register('proyectName', { required: true })} placeholder="✏️ Nombre Proyecto" />
+                                </div>
+                                <div className='ear45'>
+                                    <div className="fixed flex bg-black bg-opacity-60">
+                                        <div className="extraOutline p-4 bg-white bg-whtie m-auto rounded-lg">
+                                            <div className="file_upload p-5 border-4 border-dotted border-gray-300 rounded-lg">
+                                                <svg className="text-indigo-500 w-24 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                                                <div className="input_field flex flex-col w-max mx-auto text-center">
+                                                    <label>
+                                                        <input className="text-sm cursor-pointer w-36 hidden" onChange={handefile} type="file" />
+                                                        <div className="text bg-indigo-600 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-indigo-500">Seleciona Imagen</div>
+                                                    </label>
+                                                    <div className="title text-indigo-500 uppercase">o arrastrala aqui</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <FormTree
                                 setFileExt={(value) => setfileExt(value)}
                                 onDownloadClick={onDownloadClick}
@@ -323,7 +269,7 @@ const NewVcard = props => {
                         <div className='btn-close' onClick={SeeProfile}>
                             <i className="fa-solid fa-xmark"></i>
                         </div>
-                        <div ref={printRef} className={`caja QRRR`} style={{ opacity: watch('form') ? 1 : 0, transition: "all 0.3s ease-in", background: "var(--theme-bg-color)" }}>
+                        <div ref={printRef} className={`caja QRRR`} style={{ opacity: watch('form') ? 1 : 0, visibility: !watch('form') ? 'hidden' : 'visible', transition: "all 0.3s ease-in", background: "var(--theme-bg-color)" }}>
                             <div className={`boxQR-conten QR${marco}`}>
                                 <div className='counten'>
                                     <div className='circle'></div>
@@ -339,317 +285,30 @@ const NewVcard = props => {
                                 </div>
                             </div>
                         </div>
-                        <PreviewsVcard
-                            social={social}
-                            rows={rows}
-                            watch={watch} />
+                        <div className={`caja QRRR`} style={{ opacity: watch('form') ? 0 : 1, transition: "all 0.3s ease-in", background: "var(--theme-bg-color)" }}>
+                            {watch('image') === '' ? (
+                                <div style={{ textAlign: 'center' }}>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Camera_Flat_Icon_Vector.svg/1200px-Camera_Flat_Icon_Vector.svg.png" alt="" />
+                                    <h2>No hay data</h2>
+                                    <h3>Arrastra o elige un archivo para mostrar</h3>
+                                </div>
+                            ) : (
+                                <iframe src={watch('image')} title='Previsualizacion de archivo' allowFullScreen={true} frameborder="0"></iframe>
+                            )}
+                        </div>
                     </div>
-                    <Loading isActive={isActive} />
                 </div>
+                <Loading isActive={isActive} />
             </form>
         </div>
     );
-};
+}
 
-export default NewVcard;
+export default PhotoEdit;
 
-const FormThoRow = (props) => {
-    const [select, setSelect] = useState('');
-    const [detalle, setDetalle] = useState('👈 Selecciona un opcion');
-    useEffect(() => {
-        setSelect(props.select);
-    }, [props.select])
-    const onChangeInput = () => props.onChange("title", `${props.watch('direccion')} ${props.watch('numeracion')}, ${props.watch('codigo')}, ${props.watch('ciudad')}, ${props.watch('estado')}, ${props.watch('pais')}`)
-    const onBlurFuntion = () => props.onChange("adreess", {
-        direccion: props.watch('direccion'),
-        numeracion: props.watch('numeracion'),
-        codigo: props.watch('codigo'),
-        ciudad: props.watch('ciudad'),
-        estado: props.watch('estado'),
-        pais: props.watch('pais')
-    })
-    const onSelect = (e) => {
-        if (e.target.value === 'Email') {
-            setDetalle('📧 Escribe un correo electronico');
-        } else if (e.target.value === 'Pagina Web') {
-            setDetalle('💻 Escribe la URL de la pagina');
-        } else if (e.target.value === 'Ubicación') {
-            setDetalle('📌 Escribe la URL de la ubicacion');
-        } else if (e.target.value === 'Telefono Movil') {
-            setDetalle('📱 Escribe un numero movil');
-        } else if (e.target.value === 'Telefono Fijo') {
-            setDetalle('📞 Escribe un numero de telefono');
-        }
-        setSelect(e.target.value)
-        props.onChange("select", e.target.value);
-    };
-    const onBlur = (e) => {
-        if (e.target.value === 'Email') {
-            props.onChange('icon', 'fa-solid fa-envelope');
-        } else if (e.target.value === 'Pagina Web') {
-            props.onChange('icon', 'fa-solid fa-globe');
-        } else if (e.target.value === 'Ubicación') {
-            props.onChange('icon', 'fa-solid fa-location-dot');
-        } else if (e.target.value === 'Telefono Movil') {
-            props.onChange('icon', 'fa-solid fa-mobile-screen');
-        } else if (e.target.value === 'Telefono Fijo') {
-            props.onChange('icon', 'fa-solid fa-phone');
-        }
-    };
-    return (
-        <>
-            <div className="Form-Control contact">
-                <select id='info' defaultValue={"👉 Selecciona una opcion"} value={select} onBlur={onBlur} onChange={onSelect}>
-                    <option hidden>👉 Selecciona una opcion</option>
-                    <option value={'Email'}>📧 Email</option>
-                    <option value={'Pagina Web'}>💻 Pagina Web</option>
-                    <option value={'Ubicación'}>📌 Ubicación</option>
-                    <option value={'Telefono Movil'}>📱 Telefono Movil</option>
-                    <option value={'Telefono Fijo'}>📞 Telefono Fijo</option>
-                </select>
-                <input type="text" value={props.input} onChange={(e) => props.onChange("title", e.target.value)} placeholder={detalle} disabled={select === '' ? true : false} hidden={select === 'Ubicación' ? true : false} />
-                <button type='button' onClick={props.onRemove}><i className="fa-solid fa-minus"></i></button>
-            </div>
-            {select === 'Ubicación' ? (
-                <div className='location' onChange={onChangeInput} onBlur={onBlurFuntion}>
-                    <div className="Form-Control">
-                        <input type="text" className={props.errors.direccion && 'error'} placeholder='Dirección' {...props.register('direccion', { required: true })} />
-                        <input type="text" className={props.errors.numeracion && 'error'} placeholder='Numeración' {...props.register('numeracion', { required: true })} />
-                        <input type="number" className={props.errors.codigo && 'error'} placeholder='Código Postal' {...props.register('codigo', { required: true, maxLength: 6, min: 1 })} />
-                    </div>
-                    <div className="Form-Control">
-                        <input type="text" className={props.errors.ciudad && 'error'} placeholder='Ciudad' {...props.register('ciudad', { required: true })} />
-                        <input type="text" className={props.errors.estado && 'error'} placeholder='Estado' {...props.register('estado', { required: true })} />
-                    </div>
-                    <div className="Form-Control">
-                        <input type="text" className={props.errors.pais && 'error'} placeholder='País' {...props.register('pais', { required: true })} />
-                    </div>
-                </div>
-            ) : ''}
-        </>
-    )
-};
-const Social = props => {
-    return (
-        <div className='col' onClick={props.onClick} id={props.position + 1}>
-            <Link href="#"></Link>
-            <Link href="#"></Link>
-            <Link href="#"></Link>
-            <Link href="#"></Link>
-            <div className='box'></div>
-        </div>
-    )
-};
-const FormTwo = props => {
-    const social = ["Facebook", "Twitter", "Instagram", "Youtube", "TikTok", "Reddit", "Telegram", "Vimeo", "GitHub", "CodeSandbox", "Enlase Web", "SoundCloud", "Messenger", "Snapchat", "Spotify", "WhatsApp", "Apple Music"];
-    const [rows, setRows] = useState([]);
-    useEffect(() => {
-        setRows([...props.social]);
-    }, [props.social])
-    const setSocial = (index) => {
-        setRows(rows.concat({ icon: index, url: "", text: social[index] }));
-        props.setRSocial(rows.concat({ icon: index, url: "", text: social[index] }));
-    };
-    const handleRemove = (index) => {
-        const copyRows = [...rows];
-        copyRows.splice(index, 1);
-        setRows(copyRows);
-        props.setRSocial(copyRows);
-    };
-    const handleOnChange = (index, name, value) => {
-        const copyRows = [...rows];
-        copyRows[index] = {
-            ...copyRows[index],
-            [name]: value
-        };
-        setRows(copyRows);
-        props.setRSocial(copyRows);
-    };
-    return (
-        <>
-            <div className="header">
-                <h3 className="header-menu">Información de Contacto 📞</h3>
-                <div className="tooltip" style={{ left: "0px" }}>
-                    <button type='button' onClick={props.handleOnAdd}><i className="fa-solid fa-plus"></i></button>
-                    <span className="tooltiptext" style={{ left: "-30px", top: "-25px" }}>Agregar</span>
-                </div>
-            </div>
-            {props.rows.map((row, index) => {
-                return (
-                    <>
-                        <FormThoRow
-                            {...row}
-                            select={row.select}
-                            input={row.title}
-                            register={props.register}
-                            watch={props.watch}
-                            errors={props.errors}
-                            onChange={(name, value) => props.handleOnChange(index, name, value)}
-                            onRemove={() => props.handleOnRemove(index)}
-                            key={index}
-                        />
-                    </>
-                )
-            })}
-            <div className="header">
-                <h3 className="header-menu">Redes Sociales 🌐</h3>
-            </div>
-            <div className="Form-Control row" style={{ marginBottom: "25px" }}>
-                <div className='tiles'>
-                    {social.map((row, index) => (
-                        <div className="tooltip">
-                            <Social
-                                {...row}
-                                key={index}
-                                onClick={() => setSocial(index)}
-                                position={index} />
-                            <span className="tooltiptext">{row}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            {rows.map((row, index) => (
-                <div className='content-form social' style={{ marginTop: "-25px" }} key={index}>
-                    <div className='icon-social'>
-                        <Social {...row} onClick={() => handleRemove(index)} position={row.icon} />
-                    </div>
-                    <div className="Form-Control SOCIAL">
-                        <input type="text" value={row.redirecionable} onChange={(e) => handleOnChange(index, 'redirecionable', e.target.value)} placeholder='🔗URL' />
-                        <input type="text" value={row.url} onChange={(e) => handleOnChange(index, 'url', e.target.value)} placeholder='✏️Texto' />
-                    </div>
-                </div>
-            ))}
-        </>
-    )
-};
-const PreviewsVcard = props => {
-    const array = props.rows;
-    return (
-        <div className='caja' style={{ opacity: !props.watch('form') ? 1 : 0, transition: "all 0.3s ease-in", width: !props.watch('form') ? "100%" : "0" }}>
-            <div className='caja-backAvatar' style={{ borderRadius: props.watch('radius') }}>
-                {props.watch('image') === '' ? (<div className='caja-dinamica circleActive' />) : (<img src={props.watch('image')} style={{ borderRadius: props.watch('radius') }} className='caja-dinamica' alt='' />)}
-            </div>
-            {!props.watch('fondoActive') ? (
-                <img src={props.watch('fondo')} alt='' className='caja-image' />
-            ) : (
-                <div className='caja-image' style={{ backgroundColor: props.watch('colorFondo') }} />
-            )}
-            <div className='caja-text'>
-                <h2>{props.watch('name')}</h2>
-                <p>{props.watch('position')}</p>
-            </div>
-            <div className='caja-button'>
-                <a href={array.find(e => e.select === "Telefono Movil") !== undefined ? `tel: ${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-phone"></span><p style={{ left: " -3px" }}>Llamar</p></button></a>
-                <a href={array.find(e => e.select === "Email") !== undefined ? `mailto: ${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-envelope"></span><p style={{ left: " -0.1px" }}>Email</p></button></a>
-                <a href={array.find(e => e.select === "Pagina Web") !== undefined ? `${array.title}` : `#`}><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className="fa-solid fa-globe"></span><p>Web</p></button></a>
-                <a href={`https://www.google.com/maps/place/${array?.find(e => e.select === "Ubicación")?.title}`} target="_blank" rel="noopener noreferrer"><button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className='fa-solid fa-location-dot'></span><p style={{ left: "-13px" }}>Ubicacion</p></button></a>
-            </div >
-            <div className='caja-info'>
-                <div className="header">
-                    <h3 className="header-menu">Informacion Contacto 📞</h3>
-                </div>
-                {props.rows.map((row, index) => (
-                    <div className={`content-form ${row.select}`} key={index}>
-                        <button type='button' style={{ backgroundColor: props.watch('colorButton') }}><span className={row.icon}></span></button>
-                        <Link>{row.title}</Link>
-                        <p>{row.select}</p>
-                    </div>
-                ))}
-                <div className="header">
-                    <h3 className="header-menu">Redes Sociales 🌐</h3>
-                </div>
-                {props.social.map((row, index) => (
-                    <div className='content-form social' key={index}>
-                        <Social {...row} url="row.url" position={row.icon} />
-                        <Link>{row.text}</Link>
-                        <p>{row.url}</p>
-                    </div>
-                ))}
-            </div>
-        </div >
-    )
-};
-const FormVcard = props => {
-    const handefile = (e) => {
-        if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png') {
-            if (e.target.files[0].size > 5242880) {
-                toast.error('esta imagen es muy grande');
-            } else {
-                const file = e.target.files[0];
-                props.setValue('fileImage', file)
-                const TmpPath = URL.createObjectURL(file);
-                props.setValue('image', TmpPath);
-            }
-        } else {
-            toast.error("esto no es una imagen");
-        }
-    };
-    const handefondo = (e) => {
-        if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png') {
-            if (e.target.files[0].size > 5242880) {
-                toast.error('esta imagen es muy grande');
-            } else {
-                const file = e.target.files[0]
-                props.setValue('fileFondo', file)
-                const TmpPath = URL.createObjectURL(file);
-                props.setValue('fondo', TmpPath);
-            }
-        } else {
-            toast.error("esto no es una imagen");
-        }
-    };
-    return (
-        <>
-            <div className="header">
-                <h3 className="header-menu">📇 Estilo de Vcard</h3>
-            </div>
-            <div className="Form-Control">
-                <input type="text" className={props.errors.proyectName && 'error'} {...props.register('proyectName', { required: true })} placeholder="✏️ Nombre Proyecto" />
-            </div>
-            <div className="Form-Control">
-                <input type="text" className={props.errors.name && 'error'} {...props.register('name', { required: true })} placeholder="✏️ Nombre" />
-                <input type="text" className={props.errors.position && 'error'} {...props.register('position', { required: true })} placeholder="✏️ Posicion" />
-            </div>
-            <div className="Form-Control CUADRO">
-                <input type="file" id='fondo1' {...props.register('originalImagenFondo', { onChange: handefondo })} style={{ display: "none" }} />
-                <div className="tooltip" onClick={() => document.getElementById('color').click()}>
-                    <button type='button' className={props.watch('fondoActive') === false ? 'cuadro' : 'cuadro active'} onClick={() => props.setValue('fondoActive', true)}>
-                        <div className='circle' style={{ backgroundColor: props.watch('colorFondo') }} /></button>
-                    <span className="tooltiptext" style={{ left: "-10px", top: "-25px" }}>Color Solido</span>
-                    <input type="color" onClick={() => props.setValue('fondoActive', true)} className='circle' id='color' style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} {...props.register('colorFondo')} />
-                </div>
-                <div className="tooltip" onClick={() => document.getElementById('fondo1').click()}>
-                    <button type='button' className={props.watch('fondoActive') === true ? 'cuadro' : 'cuadro active'} onClick={() => props.setValue('fondoActive', false)}>
-                        {props.watch('fondo') === '' ? (<div className='circle circleActive' />) : (<img src={props.watch('fondo')} alt='' className='circle' />)}
-                    </button>
-                    <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Imagen de Fondo</span>
-                </div>
-                <h4>Tipo de Fondo</h4>
-                <div className="tooltip" style={{ marginLeft: "10px" }} onClick={() => document.getElementById('buton').click()}>
-                    <button type='button' className={'cuadro'}>
-                        <div className='circle' style={{ backgroundColor: props.watch('colorButton') }} /></button>
-                    <span className="tooltiptext" style={{ width: "150px", left: "-10px", top: "-25px" }}>Color de Botones</span>
-                    <input type="color" className='circle' id='buton' style={{ position: "relative", left: "20px", top: "-45px", opacity: 0 }} {...props.register('colorButton')} />
-                </div>
-                <h4>Color de Botones</h4>
-            </div>
-            <div className="header">
-                <h3 className="header-menu">🖼️ Imagen Perfil</h3>
-            </div>
-            <div className="Form-Control IMG12" style={{ height: "100%" }}>
-                <input type="file" id='file' {...props.register('originalImageprofile', { onChange: handefile })} />
-                {props.watch('image') === '' ? (<div className='avatar circleActive' onClick={() => document.getElementById('file').click()} />) : (<img className={`avatar`} onClick={() => document.getElementById('file').click()} src={props.watch('image')} alt='' />)}
-                <button type='button' className={props.watch('radius') === "50%" ? 'cuadro active' : 'cuadro'} onClick={() => props.setValue('radius', "50%")}>
-                    {props.watch('image') === '' ? (<div className='circle circleActive' />) : (<img src={props.watch('image')} alt='' className={'circle'} />)}</button>
-                <button type='button' className={props.watch('radius') === "4px" ? 'cuadro active' : 'cuadro'} onClick={() => props.setValue('radius', "4px")}>{props.watch('image') === '' ? (<div className='cuadre circleActive' />) : (<img src={props.watch('image')} alt='' className={'cuadre'} />)}</button>
-                <h4>Margen de Imagen</h4>
-            </div>
-        </>
-    );
-};
 const ButtonWizzar = props => {
     return (
-        <div className="btn-container" style={{ marginTop: "15px" }}>
+        <div className="btn-container" style={{ marginTop: "15px", height: '7vh' }}>
             <div className='text-left'>
                 <button type='button' onClick={() => { props.setValue('form', false); props.previousStep() }}>
                     <div className="icon-container">
@@ -687,8 +346,8 @@ const FormTree = (props) => {
     const [check, setCheck] = useState(false);
     const [color1, setColor1] = useState('#1400EB');
     const [color2, setColor2] = useState('#ED0012');
-    const [margin, setMargin] = useState(props.data.imageOptions.margin);
-    const [imagensize, setImagenzize] = useState(props.data.imageOptions.imageSize);
+    const [margin, setMargin] = useState(props.data?.imageOptions?.margin);
+    const [imagensize, setImagenzize] = useState(props.data?.imageOptions?.imageSize);
     const [background, setBacground] = useState(true);
     const [color1b, setColor1b] = useState('#FFFFFF');
     const [color2b, setColor2b] = useState('#FFFFFF');
@@ -711,8 +370,8 @@ const FormTree = (props) => {
         { style: { width: "100px", left: "0px", top: "-25px" }, qrCode: "square", tooltip: "Square" },
         { style: { width: "150px", left: "-20px", top: "-25px" }, qrCode: "extra-rounded", tooltip: "Extra Rounded" },
     ];
-    const array1 = listOption.findIndex(element => element.qrCode === dataRow.dotsOptions.type);
-    const array2 = listOptionEz.findIndex(element => element.qrCode === dataRow.cornersSquareOptions.type);
+    const array1 = listOption.findIndex(element => element.qrCode === dataRow?.dotsOptions?.type);
+    const array2 = listOptionEz.findIndex(element => element.qrCode === dataRow?.cornersSquareOptions?.type);
     const setData = () => {
         setActiveLink(Math.abs(array1));
         setColor1(dataRow.dotsOptions.gradient.colorStops[0].color);

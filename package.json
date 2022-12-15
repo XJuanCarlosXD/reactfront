@@ -15,6 +15,7 @@
     "react": "^18.2.0",
     "react-chartjs-2": "^5.0.1",
     "react-dom": "^18.2.0",
+    "react-filerobot-image-editor": "^4.3.7",
     "react-hook-form": "^7.37.0",
     "react-hot-toast": "^2.4.0",
     "react-material-music-player": "^1.1.9",

@@ -10,6 +10,8 @@ import Vcard from '../components/Vcard';
 import Auth from '../components/Auth';
 import Detalle from '../components/Detalle';
 import ReAuth from '../components/Re-Auth';
+import PhotoEdit from '../components/photoEdit';
+import RedirectDocument from '../components/redirect';
 
 const RouterReact = props => {
     const location = useLocation();
@@ -20,6 +22,9 @@ const RouterReact = props => {
                 <Route path='/Login' element={<Auth />} />
                 <Route path='/Re-Autenticated' element={<ReAuth />} />
                 <Route path='/Planes' element={<Planes />} />
+                <Route path='/Archivos/QRCODE' element={<PhotoEdit />} />
+                <Route path='/Proyectos/Archivos/QR/:id' element={<PhotoEdit />}></Route>
+                <Route path='/Files/Documento/rediricio/QR/:id' element={<RedirectDocument />}></Route>
                 <Route path='/Proyectos/Detalle/:id' element={<Detalle />} />
                 <Route path='/Analisis' element={<Home />} />
                 <Route path='/Proyectos' element={<Proyect />} />
