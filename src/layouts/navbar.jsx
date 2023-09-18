@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../layouts/sidebar';
 import { toast } from 'react-hot-toast';
 import { signOut } from "firebase/auth";
@@ -37,13 +37,24 @@ const Navbar = props => {
                 toast.error(error);
             });
     }
+    const MenuWarrep = (e) => {
+        e.preventDefault();
+        const menu = document.getElementById(`contextMenuPrincipal`);
+        const ul = document.getElementById('ulPrincipal');
+        ul.style.width = '160px';
+        menu.classList.add('is-active');
+        menu.style.transform = `translatey(-40vh)`;
+        menu.style.zIndex = '99';
+        menu.style.left = e.pageX + "px";
+        menu.style.top = e.pageY + "px";
+    }
     React.useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 setName(user.displayName);
                 setPhoto(user.photoURL);
                 setUid(user.uid);
-                localStorage.setItem('uid',user.uid);
+                localStorage.setItem('uid', user.uid);
                 // const emailVerified = user.emailVerified;
             }
         });
@@ -96,10 +107,34 @@ const Navbar = props => {
                         </>
                     )}
                 </nav>
-                <section className="wrapper">
+                <section className="wrapper" onContextMenu={MenuWarrep} onClick={() => document.getElementById('contextMenuPrincipal').classList.remove('is-active')}>
                     <Sidebar />
                     <Outlet></Outlet>
                     <div className={`overlay-app ${active ? 'is-active' : ''}`}></div>
+                    <button id={`contextMenuPrincipal`} style={{ position: 'fixed' }} className={`dropdown`}>
+                        <ul id='ulPrincipal'>
+                            <li onClick={() => document.getElementById(`tuiruir43`).click()}>
+                                <Link to="/Proyectos/new/Vcard" id='tuiruir43'>
+                                    <i className="fa-solid fa-qrcode"></i> Crear un proyecto
+                                </Link>
+                            </li>
+                            <li onClick={() => document.getElementById(`lsdf12`).click()}>
+                                <Link to="/Cuenta" id={`lsdf12`}>
+                                    <i className="fa-solid fa-address-card"></i> Mi Cuenta
+                                </Link>
+                            </li>
+                            <li onClick={() => document.getElementById(`asdasd4798`).click()}>
+                                <Link href="#" target="_blank" id={`asdasd4798`}>
+                                    <i className="fa-solid fa-clone"></i> Duplicar Pestaña
+                                </Link>
+                            </li>
+                            <li onClick={() => document.getElementById(`pereiia`).click()}>
+                                <Link href="#as" id='pereiia'>
+                                    <i className="fa-solid fa-receipt"></i> Cambiar a Premium
+                                </Link>
+                            </li>
+                        </ul>
+                    </button>
                 </section>
             </div>
         </>

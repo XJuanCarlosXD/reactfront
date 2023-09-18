@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 var qrCode = new QRCodeStyling({
     width: 200,
     height: 200,
-    data: `https://vcarddo-2b240.web.app/#/Vcard/Presentacion/QR/`,
+    data: `https://peluqueria-3f524.web.app/#/DZBkKCl2fPYURX4Y992U`,
     image: "",
     dotsOptions: {
         color: "#B10fd1",
@@ -230,6 +230,7 @@ const PhotoEdit = props => {
                                 <br />
                                 <div className="Form-Control">
                                     <input type="text" className={errors.proyectName && 'error'} {...register('proyectName', { required: true })} placeholder="✏️ Nombre Proyecto" />
+                                    <input className="text-sm cursor-pointer w-36" {...register('urlDonwload')}  type="text" />
                                 </div>
                                 <div className='ear45'>
                                     <div className="fixed flex bg-black bg-opacity-60">
@@ -238,7 +239,7 @@ const PhotoEdit = props => {
                                                 <svg className="text-indigo-500 w-24 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
                                                 <div className="input_field flex flex-col w-max mx-auto text-center">
                                                     <label>
-                                                        <input className="text-sm cursor-pointer w-36 hidden" onChange={handefile} type="file" />
+                                                        {/* <input className="text-sm cursor-pointer w-36 hidden" onChange={handefile} type="file" /> */}
                                                         <div className="text bg-indigo-600 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-indigo-500">Seleciona Imagen</div>
                                                     </label>
                                                     <div className="title text-indigo-500 uppercase">o arrastrala aqui</div>
@@ -266,7 +267,7 @@ const PhotoEdit = props => {
                         </StepWizard>
                     </div>
                     <div className={`caja ${active ? 'active' : ''} QR${marco}`}>
-                        <div className='btn-close' onClick={SeeProfile}>
+                        <div className='btn-close filessa' onClick={SeeProfile}>
                             <i className="fa-solid fa-xmark"></i>
                         </div>
                         <div ref={printRef} className={`caja QRRR`} style={{ opacity: watch('form') ? 1 : 0, visibility: !watch('form') ? 'hidden' : 'visible', transition: "all 0.3s ease-in", background: "var(--theme-bg-color)" }}>
@@ -293,7 +294,7 @@ const PhotoEdit = props => {
                                     <h3>Arrastra o elige un archivo para mostrar</h3>
                                 </div>
                             ) : (
-                                <iframe src={watch('image')} title='Previsualizacion de archivo' allowFullScreen={true} frameborder="0"></iframe>
+                                <iframe className='iframe' src={watch('image')} title='Previsualizacion de archivo' allowFullScreen={true} frameborder="0"></iframe>
                             )}
                         </div>
                     </div>

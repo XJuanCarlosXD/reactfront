@@ -687,7 +687,8 @@ body.light-mode .video-bg:before {
   color: var(--content-title-color);
   margin-bottom: 14px;
 }
-.content-section ul {
+.content-section ul,
+.wrapper ul {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -700,7 +701,8 @@ body.light-mode .video-bg:before {
   border: 1px solid var(--theme-bg-color);
   cursor: url(./img/pointer.png), pointer;
 }
-.content-section ul li {
+.content-section ul li,
+.wrapper ul li {
   list-style: none;
   padding: 10px 18px;
   display: flex;
@@ -711,16 +713,20 @@ body.light-mode .video-bg:before {
   white-space: nowrap;
   transition: 0.3s;
 }
-.content-section ul li:hover {
+.content-section ul li:hover,
+.wrapper ul li:hover{
   background-color: var(--theme-bg-color);
 }
-.content-section ul li:hover:first-child {
+.content-section ul li:hover:first-child,
+.wrapper ul li:hover:first-child {
   border-radius: 13px 13px 0 0;
 }
-.content-section ul li:hover:last-child {
+.content-section ul li:hover:last-child,
+.wrapper ul li:hover:last-child {
   border-radius: 0 0 13px 13px;
 }
-.content-section ul li + li {
+.content-section ul li + li,
+.wrapper ul li + li {
   border-top: 1px solid var(--border-color);
 }
 .content-section ul svg {
@@ -837,7 +843,7 @@ body.light-mode .video-bg:before {
   pointer-events: none;
   opacity: 0;
   transform: translatey(10px);
-  transition: all 0.4s ease;
+  transition: all 0.2s ease;
 }
 .dropdown ul a {
   text-decoration: none;
@@ -3451,6 +3457,12 @@ input[type="checkbox"] {
     cursor: url(./img/pointer.png), pointer;
     position: fixed;
   }
+  .btn-close.filessa{
+    position: fixed;
+    right: 0px;
+    left: 25px;
+    width: 25px;
+  }
   .caja.active .caja {
     visibility: visible;
   }
@@ -4393,7 +4405,7 @@ svg {
 .ear45 {
   margin: 8vh;
 }
-iframe {
+.iframe {
   box-sizing: border-box;
   min-height: 100%;
   min-width: 100%;

@@ -11,7 +11,6 @@ import toast from 'react-hot-toast';
 export const Proyect = props => {
     const [activeLink, setActiveLink] = useState('');
     const [modal, setModal] = useState('');
-    const [dropdown, setDropdown] = useState(true);
     const [check, setChek] = useState(false);
     const [isOpen, setIsopen] = useState('');
     const [isActive, setisActive] = useState('is-active');
@@ -53,14 +52,6 @@ export const Proyect = props => {
             }
         });
     };
-    const dropdownActive = (index) => {
-        if (dropdown) {
-            setActiveLink(index)
-        } else {
-            setActiveLink('');
-        }
-        setDropdown(!dropdown);
-    };
     const deleteQR = async (id) => {
         setModal('');
         setisActive('is-active');
@@ -97,7 +88,7 @@ export const Proyect = props => {
                     </div>
                 </div>
             </div>
-            <div className={`content-wrapper ${activeLink !== '' ? 'overlay' : ''}`}>
+            <div className={`content-wrapper`} onClick={() => setActiveLink('')}>
                 <div className="content-section">
                     <div className="header-menu">
                         <div className="content-section-title">Mis Proyectos</div>
@@ -126,10 +117,37 @@ export const Proyect = props => {
                             const movil = parseFloat(row.stadistic?.movil?.map((x) => x.escaneo).reduce((prev, curr) => prev + curr));
                             const web = parseFloat(row.stadistic?.web?.map((x) => x.escaneo).reduce((prev, curr) => prev + curr));
                             const escaneo = movil + web;
+                            const dropdownActive = (index) => {
+                                if (activeLink === index) {
+                                    setActiveLink('');
+                                } else {
+                                    setActiveLink(index)
+                                }
+                            };
+                            const MenuWarrep = (e) => {
+                                e.preventDefault();
+                                setTimeout(() => { document.getElementById(`contextMenuPrincipal`).classList.remove('is-active') }, 0)
+                                if (activeLink === index) {
+                                    const menu = document.getElementById(`contextMenu${index + 1}`)
+                                    menu.style.transform = 'translatey(-30vh)';
+                                    menu.style.zIndex = '99';
+                                    menu.style.position = 'fixed';
+                                    menu.style.left = e.pageX + "px";
+                                    menu.style.top = e.pageY + "px";
+                                } else {
+                                    const menu = document.getElementById(`contextMenu${index + 1}`)
+                                    menu.style.transform = 'translatey(-30vh)';
+                                    dropdownActive(index)
+                                    menu.style.zIndex = '99';
+                                    menu.style.position = 'fixed';
+                                    menu.style.left = e.pageX + "px";
+                                    menu.style.top = e.pageY + "px";
+                                }
+                            }
                             return (
-                                <li className="adobe-product" key={index}>
+                                <li className="adobe-product" onContextMenu={MenuWarrep} key={index}>
                                     <div className="Previews">
-                                        <Link to={row.proyect === 'Archivos QR'? `/Files/Documento/rediricio/QR/${row.id}` :`/Vcard/QR/${row.id}/#detalle`}>
+                                        <Link to={row.proyect === 'Archivos QR' ? `/Files/Documento/rediricio/QR/${row.id}` : `/Vcard/QR/${row.id}/#detalle`}>
                                             <div className="QRlist" id={`QRlist-${index + 1}`} />
                                         </Link>
                                     </div>
@@ -174,13 +192,12 @@ export const Proyect = props => {
                                         </div>
                                         <div className="tooltip">
                                             <div className="menu">
-                                                <button className={`dropdown ${activeLink === index ? 'is-active' : ''}`} onClick={() => dropdownActive(index)}>
+                                                <button id={`contextMenu${index + 1}`} className={`dropdown ${activeLink === index ? 'is-active' : ''}`} onClick={() => { setTimeout(() => { dropdownActive(index) }, 0) }}>
                                                     <ul>
                                                         <li onClick={() => CloneProyect(row.id)}><Link href="#"><i className="fa-solid fa-clone"></i> Duplicar</Link></li>
                                                         <li onClick={() => document.getElementById(`li${index}`).click()}><Link id={`li${index}`} to={`${row.edit}${row.id}`}><i className="fa-solid fa-pen-to-square"></i> Editar</Link></li>
                                                         <li onClick={() => document.getElementById(`de${index}`).click()}><Link id={`de${index}`} to={`/Proyectos/Detalle/${row.id}/`}><i className="fa-solid fa-circle-info"></i> Detalle</Link></li>
                                                         <li onClick={() => setModal(index)}><Link href="#"><i className="fa-solid fa-trash-can"></i> Borrar</Link></li>
-                                                        <li><Link href="#"><i className="fa-solid fa-xmark"></i> Cancel</Link></li>
                                                     </ul>
                                                 </button>
                                             </div>
